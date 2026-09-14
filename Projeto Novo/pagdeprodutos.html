@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Óticas Visão - Nossos Produtos</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="pagdeprodutos.css">
+</head>
+<body>
+
+    <!-- Menu de Navegação -->
+    <header class="navbar">
+        <div class="brand">
+            <img src="img/logoifg.png" alt="Icone IFG" class="logoifg-img">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
+            </a>
+        </div>
+    
+        <div class="caixa-pesquisa">
+            <input type="text" placeholder="Buscar modelos, marcas...">
+            <button type="submit">Buscar</button>
+        </div>
+
+        <div class="cart-container">
+            <a href="contato.html" class="loclojas-icone" aria-label="Localização das Lojas">
+                <img src="img/loc-icone.jpg" alt="Icone Localização" class="loclojas-img">
+            </a>
+            <a href="carrinho.html" class="carrinho-icone" aria-label="Carrinho de compras">
+                <img src="img/carrinho.png" alt="Carrinho de Compras" class="carrinho-img">
+                <span class="cart-count">3</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Container do Catálogo (Filtros na esquerda, Produtos na direita) -->
+        <section class="catalogo-container">
+            
+            <!-- Barra Lateral de Filtros -->
+            <aside class="filtros-sidebar">
+                <h3>Categorias</h3>
+                <ul>
+                    <li><a href="pagdeprodutos.html?categoria=armacoes-de-grau">Armações de Grau</a></li>
+                    <li><a href="pagdeprodutos.html?categoria=oculos-de-sol">Óculos de Sol</a></li>
+                    <li><a href="pagdeprodutos.html?categoria=lentes-de-contato">Lentes de Contato</a></li>
+                    <li><a href="pagdeprodutos.html?categoria=infantil">Infantil</a></li>
+                </ul>
+
+                <h3>Marcas</h3>
+                <ul>
+                    <li><a href="pagdeprodutos.html?marca=Ray-Ban">Ray-Ban</a></li>
+                    <li><a href="pagdeprodutos.html?marca=Tommy-Hilfiger">Tommy Hilfiger</a></li>
+                    <li><a href="pagdeprodutos.html?marca=Levi's">Levi's</a></li>
+                    <li><a href="pagdeprodutos.html?marca=Love-Moschino">Love Moschino</a></li>
+                </ul>
+            </aside>
+
+            <!-- Grade de Produtos -->
+            <div class="grid-produtos">
+                
+                <!-- Produto 1 -->
+                <div class="produto-card">
+                    <img src="img/oculos1.png" alt="Armação Ray-Ban">
+                    <span class="produto-marca">Ray-Ban</span>
+                    <h4 class="produto-titulo">BRUNEL</h4>
+                    <p class="produto-preco">R$ 1.200,00</p>
+                    <button class="btn-add-carrinho">Adicionar</button>
+                </div>
+
+                <!-- Produto 2 -->
+                <div class="produto-card">
+                    <img src="img/oculos2.png" alt="Solar Ray-Ban">
+                    <span class="produto-marca">Ray-Ban</span>
+                    <h4 class="produto-titulo">RB4457D BIO-BASED</h4>
+                    <p class="produto-preco">R$ 830,00</p>
+                    <button class="btn-add-carrinho">Adicionar</button>
+                </div>
+
+                <!-- Produto 3 -->
+                <div class="produto-card">
+                    <img src="img/oculos3.png" alt="Solar Ray-Ban">
+                    <span class="produto-marca">Ray-Ban</span>
+                    <h4 class="produto-titulo">JUSTIN REVERSE</h4>
+                    <p class="produto-preco">R$ 1.350,00</p>
+                    <button class="btn-add-carrinho">Adicionar</button>
+                </div>
+
+                <!-- Produto 4 -->
+                <div class="produto-card">
+                    <img src="img/oculos4.png" alt="Solar Ray-Ban">
+                    <span class="produto-marca">Ray-Ban</span>
+                    <h4 class="produto-titulo">WAYFARER PUFFER</h4>
+                    <p class="produto-preco">R$ 1.170,00</p>
+                    <button class="btn-add-carrinho">Adicionar</button>
+                </div>
+
+                <!-- Produto 5 -->
+                <div class="produto-card">
+                    <img src="img/oculos5.png" alt="Solar Ray-Ban">
+                    <span class="produto-marca">Ray-Ban</span>
+                    <h4 class="produto-titulo">RB3928 BY A$AP ROCKY</h4>
+                    <p class="produto-preco">R$1.180,00</p>
+                    <button class="btn-add-carrinho">Adicionar</button>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+
+<!-- Script para pesquisar as marcas na caixa de pesquisa.   -->
+
+<script>
+    // 1. Lê os parâmetros que vieram na URL (depois do '?')
+    const parametrosDaURL = new URLSearchParams(window.location.search);
+    const marcaSelecionada = parametrosDaURL.get('marca');
+    const categoriaSelecionada = parametrosDaURL.get('categoria');
+
+    // 2. Seleciona a caixa de pesquisa
+    const inputPesquisa = document.querySelector('.caixa-pesquisa input');
+
+    // 3. Verifica qual parâmetro existe e preenche a busca
+    if (inputPesquisa) {
+        if (marcaSelecionada) {
+            inputPesquisa.value = marcaSelecionada.replace(/-/g, ' ');
+        } else if (categoriaSelecionada) {
+            // Substitui traços por espaços para o texto ficar limpo na busca (ex: "oculos-de-sol" vira "oculos de sol")
+            inputPesquisa.value = categoriaSelecionada.replace(/-/g, ' ');
+        }
+    }
+</script>
+
+
+</body>
+</html>

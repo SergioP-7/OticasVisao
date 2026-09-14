@@ -1,0 +1,115 @@
+/* =========================================
+   ESTILOS ESPECÍFICOS DA PÁGINA DE PRODUTOS
+   ========================================= */
+
+/* --- Barra Lateral de Filtros --- */
+.filtros-sidebar {
+    background-color: #fbfbfd;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e5e5;
+    align-self: start; /* Impede que a barra lateral estique até o final da página */
+}
+
+.filtros-sidebar h3 {
+    font-size: 1.1rem;
+    color: #1d1d1f;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+}
+
+.filtros-sidebar h3:first-child {
+    margin-top: 0;
+}
+
+.filtros-sidebar ul {
+    list-style: none;
+}
+
+.filtros-sidebar li {
+    margin-bottom: 0.75rem;
+}
+
+.filtros-sidebar a {
+    text-decoration: none;
+    color: #555;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.filtros-sidebar a:hover {
+    color: #c92525;
+    font-weight: bold;
+}
+
+/* --- Grade de Produtos --- */
+.grid-produtos {
+    display: grid;
+    /* Cria colunas automáticas de no mínimo 220px */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+/* --- Card do Produto Individual --- */
+.produto-card {
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.produto-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    transform: translateY(-4px); /* Dá um leve efeito do card subindo ao passar o mouse */
+}
+
+.produto-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.produto-marca {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+
+.produto-titulo {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: normal;
+    /* Faz com que o título empurre o preço e botão para o final do card */
+    flex-grow: 1; 
+}
+
+.produto-preco {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #c92525;
+    margin-bottom: 1rem;
+}
+
+.btn-add-carrinho {
+    background-color: #1d1d1f;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.btn-add-carrinho:hover {
+    background-color: #333;
+}

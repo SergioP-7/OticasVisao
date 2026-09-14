@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fale Conosco - Óticas Visão</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="contato.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand">
+            <img src="img/logoifg.png" alt="Icone IFG" class="logoifg-img">
+            <a href="index-gemini.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
+            </a>
+        </div>
+        <div class="cart-container">
+            <a href="carrinho.html" class="carrinho-icone" aria-label="Carrinho de compras">
+                <img src="img/carrinho.png" alt="Carrinho de Compras" class="carrinho-img">
+                <span class="cart-count">3</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="contato-container">
+        <h2>Fale Conosco</h2>
+        <p>Preencha o formulário abaixo para agendar um horário presencial.</p>
+
+        <form action="sucesso-contato.html" method="GET" class="contato-form">
+            <div class="campo">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+            </div>
+
+            <div class="campo">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required>
+            </div>
+
+
+            <div class="campo">
+            <label for="telefone">Telefone / WhatsApp:</label>
+            <input 
+                type="tel" 
+                id="telefone" 
+                name="telefone" 
+                placeholder="(61) 99999-9999" 
+                pattern="(\([0-9]{2}\)\s?|[0-9]{2}\s?)[0-9]{4,5}-?[0-9]{4}" 
+                title="Digite um telefone válido com DDD (ex: 61999999999 ou (61) 99999-9999)" 
+                required>
+            </div>
+ 
+            
+            <div class="campo">
+                <label for="assunto">Assunto:</label>
+                <select id="assunto" name="assunto">
+                    <option value="duvida">Dúvidas sobre produtos</option>
+                    <option value="orcamento">Orçamento de Lentes</option>
+                    <option value="atendimento">Suporte / Atendimento</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="mensagem">Mensagem:</label>
+                <textarea id="mensagem" name="mensagem" rows="5" placeholder="Como podemos ajudar?" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-enviar">Enviar Mensagem</button>
+        </form>
+    </main>
+
+</body>
+</html>

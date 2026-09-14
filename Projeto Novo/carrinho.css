@@ -1,0 +1,110 @@
+.carrinho-layout {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.carrinho-layout h2 {
+    margin-bottom: 1.5rem;
+}
+
+.carrinho-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.item-card img {
+    width: 90px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.item-detalhes h4 {
+    font-size: 1.1rem;
+    color: #1d1d1f;
+}
+
+.preco-unitario {
+    color: #c92525;
+    font-weight: bold;
+}
+
+.item-qtd input {
+    width: 50px;
+    padding: 0.4rem;
+    text-align: center;
+}
+
+.btn-remover {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.btn-remover:hover {
+    color: #c92525;
+}
+
+/* Resumo da Compra */
+.resumo-pedido {
+    background-color: #fbfbfd;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e5e5;
+    height: fit-content;
+}
+
+.resumo-pedido h3 {
+    margin-bottom: 1rem;
+}
+
+.linha-resumo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.gratis {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.total {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1d1d1f;
+    margin-top: 1rem;
+}
+
+.btn-finalizar {
+    width: 100%;
+    background-color: #c92525;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .carrinho-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Óticas Visão</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="carrinho.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand">
+            <img src="img/logoifg.png" alt="Icone IFG" class="logoifg-img">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
+            </a>
+            <a href="pagdeprodutos.html" class="oculos-icone" aria-label="Lista de Óculos">
+                <img src="img/iconetitulooculos.png" alt="Icone Óculos" class="oculosicone-img">
+            </a>
+        </div>
+        
+        <div class="cart-container">
+            <a href="contato.html" class="loclojas-icone" aria-label="Localização das Lojas">
+                <img src="img/loc-icone.jpg" alt="Icone Localização" class="loclojas-img">
+            </a>
+            <a href="carrinho.html" class="carrinho-icone" aria-label="Carrinho de compras">
+                <img src="img/carrinho.png" alt="Carrinho de Compras" class="carrinho-img">
+                <span class="cart-count">3</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="carrinho-layout">
+        <h2>Seu Carrinho de Compras</h2>
+
+        <div class="carrinho-grid">
+            <section class="itens-carrinho">
+                <div class="item-card">
+                    <img src="img/oculos1.png" alt="Armação Brunel">
+                    <div class="item-detalhes">
+                        <h4>Ray-Ban Brunel</h4>
+                        <p class="preco-unitario">R$ 1.200,00</p>
+                    </div>
+                    <div class="item-qtd">
+                        <input type="number" value="1" min="1">
+                    </div>
+                    <button class="btn-remover">Remover</button>
+                </div>
+
+                <div class="item-card">
+                    <img src="img/oculos2.png" alt="Óculos Ray-Ban BIO-BASED">
+                    <div class="item-detalhes">
+                        <h4>Ray-Ban RB4457D BIO-BASED</h4>
+                        <p class="preco-unitario">R$ 830,00</p>
+                    </div>
+                    <div class="item-qtd">
+                        <input type="number" value="1" min="1">
+                    </div>
+                    <button class="btn-remover">Remover</button>
+                </div>
+
+                <div class="item-card">
+                    <img src="img/oculos3.png" alt="Justin Reverse">
+                    <div class="item-detalhes">
+                        <h4>Ray-Ban Justin Reverse</h4>
+                        <p class="preco-unitario">R$ 1.350,00</p>
+                    </div>
+                    <div class="item-qtd">
+                        <input type="number" value="1" min="1">
+                    </div>
+                    <button class="btn-remover">Remover</button>
+                </div>
+            </section>
+
+            <aside class="resumo-pedido">
+                <h3>Resumo da Compra</h3>
+                <div class="linha-resumo">
+                    <span>Subtotal (3 itens)</span>
+                    <span>R$ 3.380,00</span>
+                </div>
+                <div class="linha-resumo">
+                    <span>Frete</span>
+                    <span class="gratis">Grátis</span>
+                </div>
+                <hr>
+                <div class="linha-resumo total">
+                    <span>Total</span>
+                    <span>R$ 3.380,00</span>
+                </div>
+                <button class="btn-finalizar">Finalizar Compra</button>
+            </aside>
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+/* Reseta margens padrões */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Header principal usando Flexbox */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem 0.75rem 0.5rem; /* topo, direita, baixo, esquerda */
+    background-color: #ffffff;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* 1. Lado Esquerdo: Logo e Título */
+.brand {
+    display: flex;
+    justify-content: left;
+    gap: clamp(0.5rem, 1rem+1vw, 3rem); /* Distribui os 3 itens: início, meio e fim do espaço */
+    flex: 1; /* Faz a div crescer para ocupar todo o espaço restante do lado esquerdo */
+    max-width: 15rem; /* Ajuste este limite máximo para controlar o espaço total da área */
+    margin-right: 1rem; /* Dá um pequeno respiro em relação à caixa de pesquisa */
+}
+
+.logoifg-img {
+    width: clamp(1rem, 5vw + 1.25rem, 10rem);
+    height: clamp(1rem, 5vw + 1.25rem, 10rem);
+    object-fit: contain;
+}
+
+
+
+/* 2. Centro: Barra de Busca */
+.caixa-pesquisa {
+    display: flex;
+    align-items: center;
+    flex: 0 1 clamp(20rem, 50vw, 60rem);
+    margin: 0 1rem;
+}
+
+.caixa-pesquisa input {
+    width: 100%;
+    padding: clamp(0.5rem, 1vw, 1.25rem) 0.85rem;
+    border: 0.0625rem solid #ccc;
+    border-right: 0;
+    border-radius: 0.25rem 0 0 0.25rem;
+    outline: none;
+}
+
+.caixa-pesquisa button {
+    padding: clamp(0.5rem, 1vw, 1.25rem) 0.75rem;
+    border: 0.0625rem solid #ccc;
+    border-left: 0;
+    background-color: #f4f4f4;
+    border-radius: 0 0.25rem 0.25rem 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 3. Lado Direito: Carrinho */
+.cart-container {
+    display: flex;
+    align-items: center;
+    /* Afasta os ícones da borda lateral do site/cabeçalho */
+    padding-right: clamp(0.5rem, 2vw, 3rem); 
+}
+
+
+.carrinho-icone {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+
+
+.cart-count {
+    position: absolute;
+    top: -0.375rem;
+    right: -0.5rem;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.125rem 0.375rem;
+    border-radius: 50%;
+}
+
+.paginainicial-icone {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.paginainicial-img {
+    width: clamp(3rem, 5vw + 1.5rem, 12rem);
+    height: clamp(3rem, 5vw + 1.5rem, 12rem);
+    object-fit: contain;
+    position: relative;
+}
+
+
+
+.oculos-icone {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.oculosicone-img {
+    width: clamp(1.125rem, 2vw + 1.5rem, 5rem);
+    height: clamp(1.125rem, 2vw + 1.5rem, 5rem);
+    object-fit: contain;
+    transform: rotate(15deg);
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.loclojas-icone {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.carrinho-img, .loclojas-img {
+    width: clamp(1.125rem, 1vw + 1.2rem, 7rem);
+    height: clamp(1.125rem, 1vw + 1.2rem, 7rem);
+    object-fit: contain;
+}
+
+/* --- ESTILOS DA HOME --- */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.hero-banner {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    
+    /* --- ADICIONE UMA ALTURA MÁXIMA --- */
+    max-height: 80vh; /* Ex: limita a 80% da altura da tela, ou use px (ex: 600px) */
+    overflow: hidden;   /* Garante que nada vaze se a imagem for maior */
+}
+
+/* Se você estiver usando uma tag <img> dentro do banner */
+.hero-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* A imagem preenche o espaço sem distorcer, cortando as bordas se necessário */
+    object-position: center; /* Centraliza o corte */
+}
+
+.hero-overlay {
+    position: absolute;
+    /* Usa inset: 0 para cobrir exatamente 100% do pai sem estourar a altura */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 1rem;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    color: rgb(2, 2, 2);
+    text-align: center;
+}
+
+/* Regra para os textos dentro do hero crescerem proporcionalmente */
+.hero-overlay h1 {
+    /* Mínimo: 2rem (~32px) | Ideal: cresce rápido com a tela | Máximo: 6rem (~96px) */
+    font-size: clamp(2rem, 1.5rem + 3.5vw, 10rem);
+    margin-bottom: 1rem;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.hero-overlay p {
+    /* Mínimo: 1.1rem (~18px) | Ideal: cresce com a tela | Máximo: 2.2rem (~35px) */
+    font-size: clamp(1.1rem, 1rem + 1vw, 2.2rem);
+    max-width: 1100px; /* Aumentado para caber o texto maior sem quebrar em muitas linhas */
+    line-height: 1.4;
+}
+.emalta-img {
+    width: 100%;
+    height: auto;
+    display: block; 
+}
+
+.categorias-destaque {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.card-categoria {
+    flex: 1 1 clamp(250px, 30%, 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border: 0.0625rem solid #ccc;
+    border-radius: 0.25rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-categoria img {
+    width: 100%;
+    height: 200px;       /* Ajuste para a altura que desejar */
+    object-fit: contain;  /* Preenche o espaço mantendo a proporção */
+    border-radius: 0.25rem;
+}
+
+/* --- ESTILOS DO CATÁLOGO DE PRODUTOS --- */
+.catalogo-container {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Coluna de filtros + Coluna de produtos */
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.btn-compraragora {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #c92525;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    transition: background-color 0.1s ease;
+    font-size: 1.25rem; /* Aumenta o tamanho da fonte (equivale a ~20px) */
+    font-weight: bold;  /* Opcional: deixa o texto em negrito para dar mais destaque */
+}
+
+
+/* --- BENEFÍCIOS DA LOJA --- */
+.beneficios-loja {
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Padrão para Celular (Mobile): Um embaixo do outro */
+.beneficios-loja ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* Força os itens a ficarem em coluna */
+    align-items: center;
+    gap: 1.25rem; /* Espaçamento entre cada benefício */
+}
+
+.beneficio-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1.1rem; /* Tamanho confortável para telas menores */
+    width: 100%;
+    text-align: center;
+}
+
+.beneficio-item span {
+    font-size: 1.5rem; /* Aumenta um pouco o ícone/emoji */
+}
+
+/* Versão para Telas Maiores / Computador (acima de 768px) */
+@media (min-width: 768px) {
+    .beneficios-loja ul {
+        flex-direction: row; /* Volta a alinhar lado a lado */
+        justify-content: space-around; /* Distribui o espaço uniformemente */
+        gap: 2rem;
+    }
+
+    .beneficio-item {
+        width: auto;
+        font-size: 1.35rem; /* Deixa o texto maior no PC */
+    }
+
+    .beneficio-item span {
+        font-size: 2rem; /* Deixa o ícone bem mais destacado no PC */
+    }
+}
+
+
+@media (max-width: 768px) {
+    .catalogo-container {
+        grid-template-columns: 1fr; /* Mantém a estrutura de 1 coluna no celular */
+    }
+
+    /* Joga a barra lateral de filtros para o final da página */
+    .filtros-sidebar {
+        order: 2; 
+    }
+
+    /* Puxa a grade de produtos para o topo */
+    .grid-produtos {
+        order: 1; 
+    }
+}

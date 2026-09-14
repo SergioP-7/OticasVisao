@@ -1,0 +1,90 @@
+/* --- LAYOUTS GERAIS (CONTATO E SUCESSO) --- */
+.contato-container, 
+.sucesso-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    
+}
+
+/* --- PÁGINA DE CONTATO --- */
+.contato-container h2 {
+    font-size: 2rem;
+    color: #1d1d1f;
+    margin-bottom: 1rem;
+}
+
+.contato-form {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.campo label {
+    font-weight: bold;
+    color: #333333;
+}
+
+.campo input, 
+.campo select, 
+.campo textarea {
+    padding: 0.75rem;
+    border: 1px solid #cccccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+}
+
+.btn-enviar {
+    background-color: #c92525;
+    color: #ffffff;
+    border: none;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-enviar:hover {
+    background-color: #a81c1c;
+}
+
+/* --- PÁGINA DE SUCESSO --- */
+.sucesso-card {
+    background-color: #f7f5f5;
+    padding: 3rem 2rem;
+    border-radius: 0.5rem;
+    border: 3px solid #f00505;
+    text-align: center;
+}
+
+.sucesso-icone, .sucesso-icone img {
+   width: clamp(10rem, 2rem + 10vw, 20rem);   
+   margin-bottom: 1.5rem;         
+}
+
+
+
+.btn-voltar {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #1d1d1f;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.btn-voltar:hover {
+    background-color: #333333;
+}
