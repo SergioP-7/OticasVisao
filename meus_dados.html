@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Dados - Óticas Visão</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="navbar">
+
+    <!-- O container dropdown é obrigatório no Bootstrap -->
+    <div class="dropdown" style="display: inline-block;">
+        
+        <button type="button" class="btn-user-menu" data-bs-toggle="dropdown" 
+        aria-expanded="false" aria-label="Menu do usuário">
+          <img src="img/icone-user.png" alt="Ícone de Usuário" class="user-img">
+        </button>
+
+        <!-- ADICIONAMOS O ID "menuUsuario" AQUI PARA O JAVASCRIPT O ENCONTRAR E MUDAMOS PARA <ul> -->
+        <ul class="dropdown-menu dropdown-menu-start me-3" id="menuUsuario">
+             <!-- O JavaScript vai injetar os links aqui dentro automaticamente! -->
+        </ul>
+    </div>    
+        
+    <div class="brand">
+        <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+            <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
+        </a>
+    </div>
+
+</header>
+
+    <main class="container my-5 flex-grow-1">
+        <div class="row g-4">
+            
+            <!-- Menu Lateral Simplificado -->
+            <div class="col-lg-3">
+                <div class="list-group shadow-sm border-0">
+                    <a href="meus_dados.html" class="list-group-item list-group-item-action active fw-bold border-0 py-3" style="background-color: #c92525;">
+                        <i class="bi bi-person-lines-fill me-2"></i>Dados e Endereços
+                    </a>
+                    <a href="meus_pedidos.html" class="list-group-item list-group-item-action fw-bold border-0 py-3 text-dark">
+                        <i class="bi bi-box-seam-fill me-2"></i>Meus Pedidos
+                    </a>
+                </div>
+            </div>
+
+            <!-- Coluna Principal -->
+            <div class="col-lg-9">
+                
+                <!-- 1. Cartão de Dados Pessoais -->
+                <div class="card shadow-sm border-0 p-4 mb-4">
+                    <h3 class="h4 mb-4 fw-bold">Alterar Dados Pessoais</h3>
+
+                    <div id="alertMsg" class="d-none mb-3" role="alert"></div>
+
+                    <form onsubmit="salvarDados(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nome" class="form-label fw-bold">Nome Completo</label>
+                                <input type="text" class="form-control p-3" id="nome" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label fw-bold">E-mail</label>
+                                <input type="email" class="form-control p-3 bg-light" id="email" readonly>
+                                <div class="form-text">O e-mail não pode ser alterado diretamente.</div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h5 class="fw-bold mb-3">Alterar Senha (Opcional)</h5>
+
+                            <div class="col-md-6">
+                                <label for="novaSenha" class="form-label fw-bold">Nova Senha</label>
+                                <input type="password" class="form-control p-3" id="novaSenha" placeholder="Deixe em branco para manter a atual">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="confirmaSenha" class="form-label fw-bold">Confirmar Nova Senha</label>
+                                <input type="password" class="form-control p-3" id="confirmaSenha" placeholder="Repita a nova senha">
+                            </div>
+
+                            <div class="col-12 mt-4 text-end">
+                                <button type="submit" class="btn btn-dark btn-lg px-5 fw-bold">Salvar Alterações</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 2. Cartão de Endereços de Entrega -->
+                <div class="card shadow-sm border-0 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="h4 mb-0 fw-bold">Endereços de Entrega</h3>
+                        <!-- Botão que abre o Modal -->
+                        <button class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#modalEndereco">
+                            <i class="bi bi-plus-lg me-2"></i>Novo Endereço
+                        </button>
+                    </div>
+
+                    <!-- Lista onde os endereços vão aparecer -->
+                    <div class="row g-3" id="container-enderecos">
+                        <!-- O JavaScript vai injetar os endereços aqui -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal do Bootstrap para Cadastrar Novo Endereço -->
+    <div class="modal fade" id="modalEndereco" tabindex="-1" aria-labelledby="modalEnderecoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="modalEnderecoLabel">Cadastrar Endereço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNovoEndereco" onsubmit="adicionarEndereco(event)">
+                        <div class="mb-3">
+                            <label for="rotulo" class="form-label fw-bold">Identificação (Ex: Casa, Trabalho)</label>
+                            <input type="text" class="form-control" id="rotulo" required placeholder="Ex: Minha Casa">
+                        </div>
+                        <div class="mb-3">
+                            <label for="rua" class="form-label fw-bold">Rua e Número</label>
+                            <input type="text" class="form-control" id="rua" required placeholder="Ex: Rua João Moreira, 123">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="bairro" class="form-label fw-bold">Bairro</label>
+                                <input type="text" class="form-control" id="bairro" required placeholder="Ex: Centro">
+                            </div>
+                            <div class="col-6">
+                                <label for="cep" class="form-label fw-bold">CEP</label>
+                                <input type="text" class="form-control" id="cep" required placeholder="73800-000">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 fw-bold py-2 mt-2">Salvar Endereço</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-light mt-5 py-4 border-top">
+        <div class="container text-center">
+            <div class="row mb-4">
+                <div class="col-12 d-flex flex-column flex-md-row justify-content-center gap-4">
+                    <a href="https://wa.me/5561996696971" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                        <i class="bi bi-whatsapp fs-4 social-icon"></i>
+                        <span class="fw-bold">Converse com um Consultor Ótico!</span>
+                    </a>
+                    <a href="https://www.instagram.com/oticasvisaoformosa/" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                        <i class="bi bi-instagram fs-4 social-icon"></i>
+                        <span class="fw-bold">Nos siga no Instagram</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <hr class="text-muted">
+                    <p class="mb-0 text-muted small">&copy; 2026 Óticas Visão. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function atualizarBadgeCarrinho() {
+            let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+            let totalItens = carrinho.reduce((total, p) => total + p.quantidade, 0);
+            const badge = document.querySelector('.cart-count');
+            const imgCarrinho = document.querySelector('.carrinho-img');
+            if (badge) { badge.innerText = totalItens; badge.style.display = totalItens > 0 ? 'inline-block' : 'none'; }
+            if (imgCarrinho) {
+                imgCarrinho.src = totalItens > 0 ? 'img/carrinho-cheio.png' : 'img/carrinho.png';
+                totalItens > 0 ? imgCarrinho.classList.add('carrinho-cheio') : imgCarrinho.classList.remove('carrinho-cheio');
+            }
+        }
+
+        function atualizarMenuUsuario() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            const menuUsuario = document.getElementById('menuUsuario');
+            if (!menuUsuario) return;
+            if (usuarioLogado) {
+                menuUsuario.innerHTML = `
+                     <li><span class="dropdown-item-text fw-bold" style="color: #350909 !important;">Olá, ${usuarioLogado.nome.split(' ')[0]}!</span></li>
+                     <li><hr class="dropdown-divider"></li>
+                     <li><a class="dropdown-item" href="index.html"><strong>Página Inicial</strong></a></li>
+                     <li><a class="dropdown-item" href="meus_pedidos.html"><strong>Meus Pedidos</strong></a></li>
+                     <li><a class="dropdown-item" href="carrinho.html"><strong>Carrinho</strong></a></li>
+                     <li><a class="dropdown-item" href="contato.html"><strong>Contato</strong></a></li>
+                     <li><hr class="dropdown-divider"></li>
+                     <li><a class="dropdown-item text-danger" href="#" onclick="fazerLogout(event)" style="color: #350909 !important;"><strong>Sair</strong></a></li>
+                `;
+            } else {
+                window.location.href = 'login.html'; // Bloqueia acesso a quem não tem login
+            }
+        }
+
+        function carregarDados() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (usuarioLogado) {
+                document.getElementById('nome').value = usuarioLogado.nome || '';
+                document.getElementById('email').value = usuarioLogado.email || '';
+            }
+        }
+
+        function salvarDados(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const novaSenha = document.getElementById('novaSenha').value;
+            const confirmaSenha = document.getElementById('confirmaSenha').value;
+            const alertMsg = document.getElementById('alertMsg');
+
+            if (novaSenha !== '' && novaSenha !== confirmaSenha) {
+                alertMsg.className = 'alert alert-danger';
+                alertMsg.innerText = 'As novas senhas não coincidem!';
+                alertMsg.classList.remove('d-none');
+                return;
+            }
+
+            let usuarios = JSON.parse(localStorage.getItem('usuariosCadastrados')) || [];
+            let idx = usuarios.findIndex(u => u.email === email);
+            if (idx !== -1) {
+                usuarios[idx].nome = nome;
+                if (novaSenha !== '') usuarios[idx].senha = novaSenha;
+                localStorage.setItem('usuariosCadastrados', JSON.stringify(usuarios));
+            }
+
+            localStorage.setItem('usuarioLogado', JSON.stringify({ nome, email }));
+
+            alertMsg.className = 'alert alert-success';
+            alertMsg.innerText = 'Dados atualizados com sucesso!';
+            alertMsg.classList.remove('d-none');
+
+            setTimeout(() => { window.location.reload(); }, 1200);
+        }
+
+        // --- GESTÃO DE ENDEREÇOS ---
+        function carregarEnderecos() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (!usuarioLogado) return;
+            
+            const container = document.getElementById('container-enderecos');
+            // Procura os endereços usando o email do utilizador como chave única
+            let enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
+            
+            if (enderecos.length === 0) {
+                container.innerHTML = '<div class="col-12 text-muted text-center py-4"><i class="bi bi-geo-alt fs-2 d-block mb-2"></i>Nenhum endereço cadastrado.</div>';
+                return;
+            }
+
+            let html = '';
+            enderecos.forEach((end, index) => {
+                html += `
+                <div class="col-md-6">
+                    <div class="card border p-3 h-100 position-relative">
+                        ${index === 0 ? '<span class="badge bg-secondary position-absolute top-0 end-0 m-3">Principal</span>' : ''}
+                        <h6 class="fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>${end.rotulo}</h6>
+                        <p class="text-muted small mb-1">${end.rua}</p>
+                        <p class="text-muted small mb-1">${end.bairro} - Formosa / GO</p>
+                        <p class="text-muted small mb-0">CEP: ${end.cep}</p>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function adicionarEndereco(e) {
+            e.preventDefault();
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (!usuarioLogado) return;
+
+            const rotulo = document.getElementById('rotulo').value;
+            const rua = document.getElementById('rua').value;
+            const bairro = document.getElementById('bairro').value;
+            const cep = document.getElementById('cep').value;
+
+            // Salva na memória associado ao e-mail do cliente
+            let enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
+            enderecos.push({ rotulo, rua, bairro, cep });
+            localStorage.setItem(`enderecos_${usuarioLogado.email}`, JSON.stringify(enderecos));
+
+            // Fecha o modal via Bootstrap
+            const modalEl = document.getElementById('modalEndereco');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+
+            // Limpa o formulário e redesenha a lista
+            document.getElementById('formNovoEndereco').reset();
+            carregarEnderecos(); 
+        }
+
+        function fazerLogout(e) {
+            e.preventDefault();
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html';
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarBadgeCarrinho();
+            atualizarMenuUsuario();
+            carregarDados();
+            carregarEnderecos(); // Renderiza os endereços salvos
+            
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        });
+    </script>
+
+    <script>
+    // Função que aplica o tema do Bootstrap baseado no sistema operacional
+    function aplicarTemaDoSistema() {
+        // Verifica se o navegador/sistema está no modo escuro
+        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Define o atributo do Bootstrap na tag <html>
+        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
+    }
+
+    // Aplica o tema assim que a página carrega
+    aplicarTemaDoSistema();
+
+    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

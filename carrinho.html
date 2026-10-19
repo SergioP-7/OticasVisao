@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Óticas Visão</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/carrinho.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+
+    <link rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="icon" type="image/svg+xml" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+ rel="stylesheet">
+
+</head>
+<body>
+
+   <header class="navbar">
+        <div class="dropdown d-inline-block">
+            <button type="button" class="btn-user-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário">
+              <img src="img/icone-user.png" alt="Ícone de Usuário" class="user-img">
+            </button>
+            <ul class="dropdown-menu dropdown-menu-start me-3" id="menuUsuario"></ul>
+        </div>
+
+
+        <div class="caixa-pesquisa">
+            <input type="text" placeholder="Buscar modelos, marcas...">
+            <button type="submit">Buscar</button>
+        </div>
+            
+        <div class="brand">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
+            </a>
+           
+        </div>
+
+        </div>
+    </header>
+
+    <main class="container my-5 flex-grow-1">
+        <h2 class="mb-4">Seu Carrinho de Compras</h2>
+
+        <div class="row g-4">
+            <!-- Coluna da Esquerda: Onde o JavaScript vai injetar os produtos -->
+            <div class="col-lg-8" id="lista-carrinho">
+                <!-- O JavaScript vai colocar os cards dos produtos aqui dentro -->
+            </div>
+
+           <!-- Coluna da Direita: Resumo do Pedido -->
+<div class="col-lg-4">
+    <div class="card shadow-sm border-0 bg-light">
+        <div class="card-body p-4">
+            <h3 class="card-title h5 mb-4">Resumo da Compra</h3>
+            
+            <div class="d-flex justify-content-between mb-2 text-muted">
+                <span id="qtd-itens-resumo">Subtotal (0 itens)</span>
+                <span id="subtotal-resumo">R$ 0,00</span>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-4">
+                <span class="text-muted">Frete</span>
+                <span class="text-success fw-bold">Grátis</span>
+            </div>
+            
+            <hr>
+            
+            <div class="d-flex justify-content-between fw-bold fs-5 mb-4 mt-3">
+                <span>Total</span>
+                <span id="total-resumo">R$ 0,00</span>
+            </div>
+            
+            <!-- O JAVASCRIPT VAI INJETAR O AVISO E O BOTÃO AQUI DENTRO -->
+            <div id="area-checkout"></div>
+
+        </div>
+    </div>
+</div>
+        </div>
+    </main>
+
+    <footer class="bg-light mt-5 py-4 border-top">
+    <div class="container text-center">
+        
+        <div class="row mb-4">
+            <div class="col-12 d-flex flex-column flex-md-row justify-content-center gap-4">
+                
+                <!-- Link do WhatsApp como botão -->
+                <a href="https://wa.me/5561996696971" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                    <i class="bi bi-whatsapp fs-4 social-icon"></i>
+                    <span class="fw-bold">Converse com um Consultor Ótico!</span>
+                </a>
+               
+                <!-- Link do Instagram como botão -->
+                <a href="https://www.instagram.com/oticasvisaoformosa/" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                    <i class="bi bi-instagram fs-4 social-icon"></i>
+                    <span class="fw-bold">Nos siga no Instagram</span>
+                </a>
+
+               
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <hr class="text-muted">
+                <p class="mb-0 text-muted small">&copy; 2026 Óticas Visão. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Função para formatar números para Moeda (Real brasileiro)
+    const formatarMoeda = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    // Função principal que lê a memória e desenha o carrinho
+    function renderizarCarrinho() {
+        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+        const container = document.getElementById('lista-carrinho');
+        const qtdResumo = document.getElementById('qtd-itens-resumo');
+        const subtotalResumo = document.getElementById('subtotal-resumo');
+        const totalResumo = document.getElementById('total-resumo');
+        const areaCheckout = document.getElementById('area-checkout');
+
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+
+        // Se o carrinho estiver vazio
+        if (carrinho.length === 0) {
+            container.innerHTML = `
+                <div class="alert alert-secondary text-center p-5 border-0 shadow-sm">
+                    <h4>Seu carrinho está vazio!</h4>
+                    <p>Você ainda não adicionou nenhum óculos.</p>
+                    <a href="pagdeprodutos.html" class="btn btn-dark mt-3">Ver Produtos</a>
+                </div>`;
+            qtdResumo.innerText = `Subtotal (0 itens)`;
+            subtotalResumo.innerText = `R$ 0,00`;
+            totalResumo.innerText = `R$ 0,00`;
+            areaCheckout.innerHTML = ''; 
+            atualizarBadgeCarrinho();
+            ativarTooltips(); 
+            return;
+        } // <- AQUI FECHA O IF (E REMOVEMOS A CHAVE EXTRA QUE ESTAVA AQUI)
+
+        let html = '';
+        let totalVlr = 0;
+        let totalItens = 0;
+
+        carrinho.forEach(produto => {
+            let subtotalProduto = produto.preco * produto.quantidade;
+            totalVlr += subtotalProduto;
+            totalItens += produto.quantidade;
+
+            html += `
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="row g-0 align-items-center p-3">
+                    <div class="col-4 col-sm-3 text-center">
+                        <img src="${produto.imagem}" class="img-fluid rounded" alt="${produto.titulo}" style="max-height: 90px; object-fit: contain;">
+                    </div>
+                    <div class="col-8 col-sm-9">
+                        <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center py-0">
+                            <div class="mb-2 mb-sm-0">
+                                <h5 class="card-title fs-6 fw-bold mb-1">${produto.titulo}</h5>
+                                <p class="card-text text-danger fw-bold mb-0">${formatarMoeda(produto.preco)}</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-3 mt-2 mt-sm-0">
+                                <input type="number" class="form-control text-center shadow-none" value="${produto.quantidade}" min="1" style="width: 70px; border-color: #ccc;" onchange="alterarQuantidade(${produto.id}, this.value)">
+                                <button class="btn btn-sm text-muted text-decoration-underline border-0 p-0" onclick="removerItem(${produto.id})">Remover</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        // Atualiza a lista na tela
+        container.innerHTML = html;
+        
+        // Texto dinâmico do plural
+        let textoItens = totalItens === 1 ? '1 item' : `${totalItens} itens`;
+        qtdResumo.innerText = `Subtotal (${textoItens})`;
+        
+        subtotalResumo.innerText = formatarMoeda(totalVlr);
+        totalResumo.innerText = formatarMoeda(totalVlr);
+
+        // ---- BLOQUEIO E TOOLTIP ----
+        if (usuarioLogado) {
+            // Se logado: Injeta o botão com a Tooltip chamando a função de finalizar
+            areaCheckout.innerHTML = `
+                <button onclick="finalizarPedido(event)" class="btn w-100 fw-bold py-3 btn-voltar-premium" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="top" 
+                   title="Finalize agora para garantir o frete grátis!">
+                   Finalizar Pedido
+                </button>
+            `;
+            
+            ativarTooltips();
+
+        } else {
+            // Se não logado: Pede para fazer Login
+            areaCheckout.innerHTML = `
+                <div class="alert alert-warning text-center p-2 mb-3" role="alert" style="font-size: 0.9rem;">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> 
+                    Para finalizar a compra, inicie sessão na sua conta.
+                </div>
+                <a href="login.html" class="btn btn-dark w-100 fw-bold py-3">
+                   Fazer Login para Finalizar
+                </a>
+            `;
+        }
+        
+        atualizarBadgeCarrinho();
+    } 
+    
+
+// Função para finalizar a compra, salvar nos pedidos e limpar o carrinho
+    function finalizarPedido(e) {
+        e.preventDefault();
+        
+        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+        if (carrinho.length === 0) return;
+
+        // 1. Cria o "Recibo" do pedido
+        let novoPedido = {
+            id: Math.floor(Math.random() * 10000), // Gera um número de pedido aleatório
+            data: new Date().toLocaleDateString('pt-BR'),
+            status: 'Em Separação',
+            totalItens: carrinho.reduce((total, p) => total + p.quantidade, 0),
+            valorTotal: carrinho.reduce((total, p) => total + (p.preco * p.quantidade), 0),
+            itens: carrinho
+        };
+
+        // 2. Guarda na lista de Pedidos da conta
+        let pedidos = JSON.parse(localStorage.getItem('pedidosOtica')) || [];
+        pedidos.push(novoPedido);
+        localStorage.setItem('pedidosOtica', JSON.stringify(pedidos));
+
+        // 3. Esvazia o carrinho e vai para a página de sucesso
+        localStorage.removeItem('carrinhoOtica');
+        window.location.href = 'sucesso-pedido.html';
+    }
+   
+
+    function alterarQuantidade(id, novaQtd) {
+        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+        let produto = carrinho.find(p => p.id === id);
+        if (produto) {
+            produto.quantidade = parseInt(novaQtd) > 0 ? parseInt(novaQtd) : 1;
+            localStorage.setItem('carrinhoOtica', JSON.stringify(carrinho));
+            renderizarCarrinho();
+        }
+    }
+
+    function removerItem(id) {
+        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+        carrinho = carrinho.filter(p => p.id !== id);
+        localStorage.setItem('carrinhoOtica', JSON.stringify(carrinho));
+        renderizarCarrinho();
+    }
+
+    function atualizarBadgeCarrinho() {
+        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+        let totalItens = carrinho.reduce((total, produto) => total + produto.quantidade, 0);
+        
+        const badge = document.querySelector('.cart-count');
+        if (badge) {
+            badge.innerText = totalItens;
+            badge.style.display = totalItens > 0 ? 'inline-block' : 'none';
+        }
+
+        const imgCarrinho = document.querySelector('.carrinho-img');
+        if (imgCarrinho) {
+            if (totalItens > 0) {
+                imgCarrinho.src = 'img/carrinho-cheio.png';
+                imgCarrinho.classList.add('carrinho-cheio');
+            } else {
+                imgCarrinho.src = 'img/carrinho.png';
+                imgCarrinho.classList.remove('carrinho-cheio');
+            }
+        }
+    }
+
+   function atualizarMenuUsuario() {
+            // Vai à memória procurar se há alguém logado
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            const menuUsuario = document.getElementById('menuUsuario');
+
+            if (!menuUsuario) return;
+
+            if (usuarioLogado) {
+                // SE ESTIVER LOGADO: Mostra o Nome, Meus Dados, Meus Pedidos + Carrinho e Contato
+                menuUsuario.innerHTML = `
+                     <li><span class="dropdown-item-text fw-bold" style="color: #350909 !important; 
+                            ;">Olá, ${usuarioLogado.nome.split(' ')[0]}!</span></li>
+                     <li><hr class="dropdown-divider"></li>
+                     <li><a class="dropdown-item" href="index.html"><strong>Página Inicial</strong></a></li>
+                     <li><a class="dropdown-item" href="meus_pedidos.html"><strong>Meus Pedidos</strong></a></li>
+                     <li><a class="dropdown-item" href="meus_dados.html"><strong>Meus Dados</strong></a></li>
+                     <li><a class="dropdown-item" href="contato.html"><strong>Contato</strong></a></li>
+                     <li><hr class="dropdown-divider"></li>
+                     <li><a class="dropdown-item text-danger"  onclick="fazerLogout(event)" style="color: #350909 !important;"><strong>Sair</strong></a></li>
+                `;
+            } else {
+                // SE NÃO ESTIVER LOGADO: Mostra a opção de Login + Carrinho e Contato
+                menuUsuario.innerHTML = `
+                     <li><a class="dropdown-item" href="login.html" style="color: #350909 !important;"><strong>Login / Cadastrar-se</strong></a></li>
+                     <li><a class="dropdown-item" href="carrinho.html" style="color: #350909 !important;"><strong>Carrinho</strong></a></li>
+                     <li><hr class="dropdown-divider"></li>
+                     <li><a class="dropdown-item" href="contato.html";"><strong>Contato</strong></a></li>
+                `;
+            }
+        }
+
+    // Função para apagar a memória e sair
+    function fazerLogout(e) {
+        e.preventDefault();
+        localStorage.removeItem('usuarioLogado');
+        window.location.reload(); // Recarrega a página para atualizar o menu
+    }
+
+    // Função universal para ativar as Tooltips em qualquer momento
+    function ativarTooltips() {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    }
+
+    // Inicializa tudo quando a página carrega
+    document.addEventListener('DOMContentLoaded', () => {
+        renderizarCarrinho();
+        atualizarMenuUsuario();
+        ativarTooltips(); // Ativa logo o ícone do cabeçalho!
+    });
+
+</script>
+
+<script>
+    // Função que aplica o tema do Bootstrap baseado no sistema operacional
+    function aplicarTemaDoSistema() {
+        // Verifica se o navegador/sistema está no modo escuro
+        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Define o atributo do Bootstrap na tag <html>
+        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
+    }
+
+    // Aplica o tema assim que a página carrega
+    aplicarTemaDoSistema();
+
+    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
+</script>
+
+
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

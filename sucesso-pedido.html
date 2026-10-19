@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Realizado - Óticas Visão</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/contato.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+
+    <link rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="icon" type="image/svg+xml" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+</head>
+<body>
+
+    <header class="navbar" style="justify-content: center;">
+        <div class="brand">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <!-- Removida a classe paginainicial-img e adicionado o style inline -->
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" style="height: 80px; width: auto;">
+            </a>
+        </div>
+    </header>
+
+  <main class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
+        <!-- Card flutuante e moderno -->
+        <div class="card border-0 shadow-lg rounded-4 text-center p-4 p-md-5" style="max-width: 650px; background-color: #ffffff;">
+            <div class="card-body">
+                
+                <!-- Ícone de Sucesso -->
+                <div class="mb-4">
+                    <img src="img/contato-sucessoicone.png" alt="Ícone de Sucesso" class="img-fluid" style="width: 170px; object-fit: contain;">
+                </div>
+                
+                <!-- Títulos com tipografia elegante -->
+                <h2 class="fw-bolder mb-3" style="color: #1d1d1f; letter-spacing: -0.5px;">
+                    Pedido realizado com sucesso!
+                </h2>
+                
+                <p class="text-muted fs-5 mb-5 px-md-3">
+                    Parabéns pela sua compra! Seu pedido já está sendo processado e em breve você receberá atualizações no seu e-mail.
+                </p>
+                
+                <!-- Botão estilo "pílula" (Pill) com a classe premium -->
+                <a href="index.html" class="btn btn-voltar-premium rounded-pill px-5 py-3 fw-bold shadow-sm">
+                    Voltar para a Página Inicial
+                </a>
+                
+            </div>
+        </div>
+    </main>
+
+<footer class="bg-light mt-5 py-4 border-top">
+    <div class="container text-center">
+        
+        <div class="row mb-4">
+            <div class="col-12 d-flex flex-column flex-md-row justify-content-center gap-4">
+                
+                <!-- Link do WhatsApp como botão -->
+                <a href="https://wa.me/5561996696971" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                    <i class="bi bi-whatsapp fs-4 social-icon"></i>
+                    <span class="fw-bold">Converse com um Consultor Ótico!</span>
+                </a>
+               
+                <!-- Link do Instagram como botão -->
+                <a href="https://www.instagram.com/oticasvisaoformosa/" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                    <i class="bi bi-instagram fs-4 social-icon"></i>
+                    <span class="fw-bold">Nos siga no Instagram</span>
+                </a>
+
+               
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <hr class="text-muted">
+                <p class="mb-0 text-muted small">&copy; 2026 Óticas Visão. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Função que aplica o tema do Bootstrap baseado no sistema operacional
+    function aplicarTemaDoSistema() {
+        // Verifica se o navegador/sistema está no modo escuro
+        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Define o atributo do Bootstrap na tag <html>
+        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
+    }
+
+    // Aplica o tema assim que a página carrega
+    aplicarTemaDoSistema();
+
+    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
+</script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

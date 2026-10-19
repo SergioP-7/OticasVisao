@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fale Conosco - Óticas Visão</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/contato.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+
+    <link rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="icon" type="image/svg+xml" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    
+</head>
+<body>
+
+   <header class="navbar" style="justify-content: center;">
+        <div class="brand">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <!-- Removida a classe paginainicial-img e adicionado o style inline -->
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" style="height: 80px; width: auto;">
+            </a>
+        </div>
+    </header>
+
+    <main class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
+        
+        <!-- Card Flutuante do Formulário de Contato -->
+        <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5" style="max-width: 650px; width: 100%; background: #ffffff;">
+            
+            <div class="text-center mb-4">
+                <h2 class="fw-bolder mb-2" style="color: #1d1d1f; letter-spacing: -0.5px;">Fale Conosco!</h2>
+                <p class="text-muted fs-6 px-md-3">Preencha o formulário abaixo para agendar um horário presencial ou tirar dúvidas com nossos consultores.</p>
+            </div>
+
+            <form action="sucesso-contato.html" method="GET">
+                
+                <!-- Nome -->
+                <div class="mb-3">
+                    <label for="nome" class="form-label fw-semibold text-dark">Nome Completo</label>
+                    <input type="text" class="form-control bg-light p-3" id="nome" name="nome" placeholder="Seu nome completo" required>
+                </div>
+
+                <!-- E-mail e Telefone lado a lado em telas grandes -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label fw-semibold text-dark">E-mail</label>
+                        <input type="email" class="form-control bg-light p-3" id="email" name="email" placeholder="seuemail@exemplo.com" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="telefone" class="form-label fw-semibold text-dark">WhatsApp / Celular</label>
+                        <input type="tel" class="form-control bg-light p-3" id="telefone" name="telefone" placeholder="(61) 99999-9999" pattern="(\([0-9]{2}\)\s?|[0-9]{2}\s?)[0-9]{4,5}-?[0-9]{4}" title="Digite um telefone válido com DDD (ex: 61999999999 ou (61) 99999-9999)" required>
+                    </div>
+                </div>
+
+                <!-- Unidade -->
+                <div class="mb-3">
+                    <label for="unidade_loja" class="form-label fw-semibold text-dark">Selecione a Unidade</label>
+                    <select class="form-select bg-light p-3" id="unidade_loja" name="unidade_loja">
+                        <option value="" selected disabled>Escolha a loja mais próxima...</option>
+                        <option value="Formosa - Centro">Formosa - Centro (Em Frente ao SushiLoko)</option>
+                        <option value="Formosa - Av. Brasília">Formosa - Av. Brasília (Ao Lado da Drogaria Ferreti)</option>
+                    </select>
+                </div>
+
+                <!-- Mensagem -->
+                <div class="mb-4">
+                    <label for="mensagem" class="form-label fw-semibold text-dark">Mensagem</label>
+                    <textarea class="form-control bg-light p-3" id="mensagem" name="mensagem" rows="4" placeholder="Como podemos ajudar?" required></textarea>
+                </div>
+
+                <!-- Botão de Envio Estilo Premium -->
+                <button type="submit" class="btn btn-dark w-100 py-3 fw-bold rounded-pill btn-voltar-premium">
+                    <i class="bi bi-send-fill me-2"></i> Enviar Mensagem
+                </button>
+
+            </form>
+        </div>
+    </main>
+
+    <footer class="bg-light mt-5 py-4 border-top">
+    <div class="container text-center">
+        
+        <div class="row mb-4">
+            <div class="col-12 d-flex flex-column flex-md-row justify-content-center gap-4">
+
+                 <!-- Link do WhatsApp como botão -->
+                <a href="https://wa.me/5561996696971" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                    <i class="bi bi-whatsapp fs-4 social-icon"></i>
+                    <span class="fw-bold">Converse com um Consultor Ótico!</span>
+                </a>
+               
+                <!-- Link do Instagram como botão -->
+                <a href="https://www.instagram.com/oticasvisaoformosa/" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                    <i class="bi bi-instagram fs-4 social-icon"></i>
+                    <span class="fw-bold">Nos siga no Instagram</span>
+                </a>
+
+               
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <hr class="text-muted">
+                <p class="mb-0 text-muted small">&copy; 2026 Óticas Visão. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Função que aplica o tema do Bootstrap baseado no sistema operacional
+    function aplicarTemaDoSistema() {
+        // Verifica se o navegador/sistema está no modo escuro
+        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Define o atributo do Bootstrap na tag <html>
+        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
+    }
+
+    // Aplica o tema assim que a página carrega
+    aplicarTemaDoSistema();
+
+    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
+</script>
+
+
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

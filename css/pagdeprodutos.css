@@ -2,6 +2,7 @@
    ESTILOS ESPECÍFICOS DA PÁGINA DE PRODUTOS
    ========================================= */
 
+
 /* --- Barra Lateral de Filtros --- */
 .filtros-sidebar {
     background-color: #fbfbfd;
@@ -42,29 +43,14 @@
     font-weight: bold;
 }
 
-/* --- Grade de Produtos --- */
-.grid-produtos {
-    display: grid;
-    /* Cria colunas automáticas de no mínimo 220px */
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
-}
 
-/* --- Card do Produto Individual --- */
 .produto-card {
-    background-color: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .produto-card:hover {
-    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
-    transform: translateY(-4px); /* Dá um leve efeito do card subindo ao passar o mouse */
+    transform: translateY(-4px); /* Mantém o seu efeito de flutuar */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; 
 }
 
 .produto-card img {
@@ -113,3 +99,5 @@
 .btn-add-carrinho:hover {
     background-color: #333;
 }
+
+

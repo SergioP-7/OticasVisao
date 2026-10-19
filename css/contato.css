@@ -1,0 +1,11 @@
+/* --- LAYOUTS GERAIS (CONTATO E SUCESSO) --- */
+.contato-container, 
+.sucesso-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 0 1rem; /* Reduzido para dar mais espaço útil nas laterais em telas pequenas */
+    width: 100%;
+    box-sizing: border-box; /* Impede que o padding aumente a largura total */
+}
+
+

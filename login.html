@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Óticas Visão</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/contato.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+     <header class="navbar" style="justify-content: center;">
+        <div class="brand">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" style="height: 80px; width: auto;">
+            </a>
+        </div>
+    </header>
+
+
+    <main class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
+        
+        <!-- Card Flutuante Premium -->
+        <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5" style="max-width: 480px; width: 100%; background: #ffffff;">
+            
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-person-circle" style="font-size: 3rem; color: #741111;"></i>
+                </div>
+                <h2 class="fw-bolder mb-2" style="color: #520909; letter-spacing: -0.5px;">Acessar Conta</h2>
+                <p class="text-muted fs-6">Insira seus dados para entrar.</p>
+            </div>
+            
+            <div id="alertMsg" class="alert d-none text-center fw-bold" role="alert"></div>
+
+            <form id="formLogin" onsubmit="fazerLogin(event)">
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold text-dark">E-mail</label>
+                    <input type="email" class="form-control bg-light p-3" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="senha" class="form-label fw-semibold text-dark">Senha</label>
+                    <input type="password" class="form-control bg-light p-3" id="senha" placeholder="Sua senha secreta" required>
+                </div>
+
+                <button type="submit" class="btn w-100 py-3 fw-bold rounded-pill btn-voltar-premium">
+                    Entrar
+                </button>
+            </form>
+
+            <p class="text-center mt-4 mb-0 text-muted">
+                Ainda não tem conta? <a href="cadastro.html" class="fw-bold text-decoration-none" style="color: #c92525;">Cadastrar-se</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function fazerLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const senha = document.getElementById('senha').value;
+            const alertMsg = document.getElementById('alertMsg');
+
+            // 1. Puxa a lista de usuários da memória
+            let usuarios = JSON.parse(localStorage.getItem('usuariosCadastrados')) || [];
+
+            // 2. Procura na lista alguém com esse e-mail E essa senha
+            let usuarioEncontrado = usuarios.find(u => u.email === email && u.senha === senha);
+
+            if (usuarioEncontrado) {
+                
+                // Grava a "sessão" apenas do usuário que logou
+                localStorage.setItem('usuarioLogado', JSON.stringify({
+                    nome: usuarioEncontrado.nome,
+                    email: usuarioEncontrado.email
+                }));
+
+                alertMsg.className = 'alert alert-success';
+                alertMsg.innerText = `Bem-vindo de volta, ${usuarioEncontrado.nome.split(' ')[0]}!`;
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1200);
+
+            } else {
+                alertMsg.className = 'alert alert-danger';
+                alertMsg.innerText = 'E-mail ou senha incorretos!';
+            }
+        }
+    </script>
+
+    <script>
+    // Função que aplica o tema do Bootstrap baseado no sistema operacional
+    function aplicarTemaDoSistema() {
+        // Verifica se o navegador/sistema está no modo escuro
+        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Define o atributo do Bootstrap na tag <html>
+        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
+    }
+
+    // Aplica o tema assim que a página carrega
+    aplicarTemaDoSistema();
+
+    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
+</script>
+
+
+
+</body>
+</html>
