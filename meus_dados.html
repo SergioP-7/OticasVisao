@@ -15,45 +15,24 @@
 <body>
 
     <header class="navbar">
-
-    <!-- O container dropdown é obrigatório no Bootstrap -->
-    <div class="dropdown" style="display: inline-block;">
-        
-        <button type="button" class="btn-user-menu" data-bs-toggle="dropdown" 
-        aria-expanded="false" aria-label="Menu do usuário">
-          <img src="img/icone-user.png" alt="Ícone de Usuário" class="user-img">
-        </button>
-
-        <!-- ADICIONAMOS O ID "menuUsuario" AQUI PARA O JAVASCRIPT O ENCONTRAR E MUDAMOS PARA <ul> -->
-        <ul class="dropdown-menu dropdown-menu-start me-3" id="menuUsuario">
-             <!-- O JavaScript vai injetar os links aqui dentro automaticamente! -->
-        </ul>
-    </div>    
-        
-    <div class="brand">
-        <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
-            <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
-        </a>
-    </div>
-
-</header>
+        <div class="dropdown" style="display: inline-block;">
+            <button type="button" class="btn-user-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário">
+              <img src="img/icone-user.png" alt="Ícone de Usuário" class="user-img">
+            </button>
+            <ul class="dropdown-menu dropdown-menu-start me-3" id="menuUsuario"></ul>
+        </div>    
+            
+        <div class="brand">
+            <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
+                <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
+            </a>
+        </div>
+    </header>
 
     <main class="container my-5 flex-grow-1">
-        <div class="row g-4">
+        <div class="row justify-content-center">
             
-            <!-- Menu Lateral Simplificado -->
-            <div class="col-lg-3">
-                <div class="list-group shadow-sm border-0">
-                    <a href="meus_dados.html" class="list-group-item list-group-item-action active fw-bold border-0 py-3" style="background-color: #c92525;">
-                        <i class="bi bi-person-lines-fill me-2"></i>Dados e Endereços
-                    </a>
-                    <a href="meus_pedidos.html" class="list-group-item list-group-item-action fw-bold border-0 py-3 text-dark">
-                        <i class="bi bi-box-seam-fill me-2"></i>Meus Pedidos
-                    </a>
-                </div>
-            </div>
-
-            <!-- Coluna Principal -->
+            <!-- Coluna Principal Centralizada (Sem o aside lateral) -->
             <div class="col-lg-9">
                 
                 <!-- 1. Cartão de Dados Pessoais -->
@@ -62,16 +41,15 @@
 
                     <div id="alertMsg" class="d-none mb-3" role="alert"></div>
 
-                    <form onsubmit="salvarDados(event)">
+                    <form onsubmit="salvarDados(event)" novalidate>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="nome" class="form-label fw-bold">Nome Completo</label>
-                                <input type="text" class="form-control p-3" id="nome" required>
+                                <input type="text" class="form-control p-3" id="nome" placeholder="Seu nome completo">
                             </div>
                             <div class="col-md-6">
                                 <label for="email" class="form-label fw-bold">E-mail</label>
-                                <input type="email" class="form-control p-3 bg-light" id="email" readonly>
-                                <div class="form-text">O e-mail não pode ser alterado diretamente.</div>
+                                <input type="email" class="form-control p-3" id="email" placeholder="seuemail@exemplo.com">
                             </div>
 
                             <hr class="my-4">
@@ -89,7 +67,7 @@
                             </div>
 
                             <div class="col-12 mt-4 text-end">
-                                <button type="submit" class="btn btn-dark btn-lg px-5 fw-bold">Salvar Alterações</button>
+                                <button type="submit" id="btnSalvarDados" class="btn btn-dark btn-lg px-5 fw-bold">Alterar meus dados</button>
                             </div>
                         </div>
                     </form>
@@ -99,16 +77,12 @@
                 <div class="card shadow-sm border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="h4 mb-0 fw-bold">Endereços de Entrega</h3>
-                        <!-- Botão que abre o Modal -->
-                        <button class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#modalEndereco">
+                        <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#modalEndereco">
                             <i class="bi bi-plus-lg me-2"></i>Novo Endereço
                         </button>
                     </div>
 
-                    <!-- Lista onde os endereços vão aparecer -->
-                    <div class="row g-3" id="container-enderecos">
-                        <!-- O JavaScript vai injetar os endereços aqui -->
-                    </div>
+                    <div class="row g-3" id="container-enderecos"></div>
                 </div>
 
             </div>
@@ -124,24 +98,30 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
+                    <div id="alertaViaCep" class="alert alert-warning py-2 px-3 small d-none" role="alert"></div>
+
                     <form id="formNovoEndereco" onsubmit="adicionarEndereco(event)">
                         <div class="mb-3">
                             <label for="rotulo" class="form-label fw-bold">Identificação (Ex: Casa, Trabalho)</label>
                             <input type="text" class="form-control" id="rotulo" required placeholder="Ex: Minha Casa">
                         </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="cep" class="form-label fw-bold">CEP</label>
+                                <input type="text" class="form-control" id="cep" required maxlength="9" placeholder="73800-000" oninput="formatarCepModal(this)" onblur="consultarViaCEP(this.value)">
+                            </div>
+                            <div class="col-6">
+                                <label for="cidadeEstado" class="form-label fw-bold">Cidade / UF</label>
+                                <input type="text" class="form-control" id="cidadeEstado" required placeholder="Formosa / GO">
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label for="rua" class="form-label fw-bold">Rua e Número</label>
                             <input type="text" class="form-control" id="rua" required placeholder="Ex: Rua João Moreira, 123">
                         </div>
-                        <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <label for="bairro" class="form-label fw-bold">Bairro</label>
-                                <input type="text" class="form-control" id="bairro" required placeholder="Ex: Centro">
-                            </div>
-                            <div class="col-6">
-                                <label for="cep" class="form-label fw-bold">CEP</label>
-                                <input type="text" class="form-control" id="cep" required placeholder="73800-000">
-                            </div>
+                        <div class="mb-3">
+                            <label for="bairro" class="form-label fw-bold">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" required placeholder="Ex: Centro">
                         </div>
                         <button type="submit" class="btn btn-dark w-100 fw-bold py-2 mt-2">Salvar Endereço</button>
                     </form>
@@ -174,169 +154,223 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/global.js"></script>
+
     <script>
-        function atualizarBadgeCarrinho() {
-            let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
-            let totalItens = carrinho.reduce((total, p) => total + p.quantidade, 0);
-            const badge = document.querySelector('.cart-count');
-            const imgCarrinho = document.querySelector('.carrinho-img');
-            if (badge) { badge.innerText = totalItens; badge.style.display = totalItens > 0 ? 'inline-block' : 'none'; }
-            if (imgCarrinho) {
-                imgCarrinho.src = totalItens > 0 ? 'img/carrinho-cheio.png' : 'img/carrinho.png';
-                totalItens > 0 ? imgCarrinho.classList.add('carrinho-cheio') : imgCarrinho.classList.remove('carrinho-cheio');
-            }
-        }
+        // --- PROGRAMAÇÃO FUNCIONAL: FUNÇÕES PURAS & IMUTÁVEIS ---
+        const obterUsuarioAtual = () => JSON.parse(localStorage.getItem('usuarioLogado'));
 
-        function atualizarMenuUsuario() {
-            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-            const menuUsuario = document.getElementById('menuUsuario');
-            if (!menuUsuario) return;
-            if (usuarioLogado) {
-                menuUsuario.innerHTML = `
-                     <li><span class="dropdown-item-text fw-bold" style="color: #350909 !important;">Olá, ${usuarioLogado.nome.split(' ')[0]}!</span></li>
-                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="index.html"><strong>Página Inicial</strong></a></li>
-                     <li><a class="dropdown-item" href="meus_pedidos.html"><strong>Meus Pedidos</strong></a></li>
-                     <li><a class="dropdown-item" href="carrinho.html"><strong>Carrinho</strong></a></li>
-                     <li><a class="dropdown-item" href="contato.html"><strong>Contato</strong></a></li>
-                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item text-danger" href="#" onclick="fazerLogout(event)" style="color: #350909 !important;"><strong>Sair</strong></a></li>
-                `;
-            } else {
-                window.location.href = 'login.html'; // Bloqueia acesso a quem não tem login
-            }
-        }
+        const normalizarDadosPerfil = ({ nome, email }) => ({
+            nome: nome.trim(),
+            email: email.trim()
+        });
 
-        function carregarDados() {
-            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-            if (usuarioLogado) {
-                document.getElementById('nome').value = usuarioLogado.nome || '';
-                document.getElementById('email').value = usuarioLogado.email || '';
-            }
-        }
+        const validarSenhasOpcionais = (novaSenha, confirmaSenha) =>
+            novaSenha === '' || novaSenha === confirmaSenha;
 
-        function salvarDados(event) {
+        const criarUsuarioAtualizado = (usuarioAnterior, dadosRetornados) => ({
+            ...usuarioAnterior,
+            nome: dadosRetornados.nome,
+            email: dadosRetornados.email
+        });
+
+        const exibirAlertaPerfil = (mensagem, tipo = 'danger') => {
+            const alertMsg = document.getElementById('alertMsg');
+            alertMsg.className = `alert alert-${tipo} fw-semibold mb-3`;
+            alertMsg.innerText = mensagem;
+        };
+
+        // Preenche o formulário inicial a partir do localStorage
+        const carregarDados = () => {
+            const usuarioLogado = obterUsuarioAtual();
+            if (!usuarioLogado) {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('nome').value = usuarioLogado.nome || '';
+            document.getElementById('email').value = usuarioLogado.email || '';
+        };
+
+        // Migra endereços caso o usuário altere o e-mail
+        const migrarEnderecosSeEmailMudou = (emailAntigo, emailNovo) => {
+            if (!emailAntigo || emailAntigo === emailNovo) return;
+            const chaveAntiga = `enderecos_${emailAntigo}`;
+            const enderecosSalvos = localStorage.getItem(chaveAntiga);
+            if (enderecosSalvos) {
+                localStorage.setItem(`enderecos_${emailNovo}`, enderecosSalvos);
+                localStorage.removeItem(chaveAntiga);
+            }
+        };
+
+        // Fluxo principal: PUT /api/user (200, 400, 409)
+        async function salvarDados(event) {
             event.preventDefault();
-            const nome = document.getElementById('nome').value.trim();
-            const email = document.getElementById('email').value.trim();
+
+            const usuarioAnterior = obterUsuarioAtual();
+            if (!usuarioAnterior) return;
+
+            const dadosLimpos = normalizarDadosPerfil({
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value
+            });
+
             const novaSenha = document.getElementById('novaSenha').value;
             const confirmaSenha = document.getElementById('confirmaSenha').value;
-            const alertMsg = document.getElementById('alertMsg');
 
-            if (novaSenha !== '' && novaSenha !== confirmaSenha) {
-                alertMsg.className = 'alert alert-danger';
-                alertMsg.innerText = 'As novas senhas não coincidem!';
-                alertMsg.classList.remove('d-none');
+            if (!validarSenhasOpcionais(novaSenha, confirmaSenha)) {
+                exibirAlertaPerfil('As novas senhas não coincidem!', 'danger');
                 return;
             }
 
-            let usuarios = JSON.parse(localStorage.getItem('usuariosCadastrados')) || [];
-            let idx = usuarios.findIndex(u => u.email === email);
-            if (idx !== -1) {
-                usuarios[idx].nome = nome;
-                if (novaSenha !== '') usuarios[idx].senha = novaSenha;
-                localStorage.setItem('usuariosCadastrados', JSON.stringify(usuarios));
+            const btnSalvar = document.getElementById('btnSalvarDados');
+            btnSalvar.disabled = true;
+            btnSalvar.innerText = 'Salvando...';
+
+            const res = await requisicaoAPI('/api/user', {
+                method: 'PUT',
+                body: JSON.stringify(dadosLimpos)
+            });
+
+            btnSalvar.disabled = false;
+            btnSalvar.innerText = 'Alterar meus dados';
+
+            // Tratamento de erros da API (400 e 409)
+            if (res.status === 400) {
+                exibirAlertaPerfil(res.dados.mensagem || 'Nome e e-mail válidos são obrigatórios.', 'danger');
+                return;
             }
 
-            localStorage.setItem('usuarioLogado', JSON.stringify({ nome, email }));
+            if (res.status === 409) {
+                exibirAlertaPerfil(res.dados.mensagem || 'Este e-mail já está em uso por outro usuário.', 'warning');
+                return;
+            }
 
-            alertMsg.className = 'alert alert-success';
-            alertMsg.innerText = 'Dados atualizados com sucesso!';
-            alertMsg.classList.remove('d-none');
+            if (!res.ok) {
+                exibirAlertaPerfil(res.mensagem || 'Erro ao atualizar dados.', 'danger');
+                return;
+            }
 
-            setTimeout(() => { window.location.reload(); }, 1200);
+            // 200 OK: Atualização imutável no localStorage
+            const dadosConfirmados = res.dados.dados || dadosLimpos;
+            const usuarioAtualizado = criarUsuarioAtualizado(usuarioAnterior, dadosConfirmados);
+
+            migrarEnderecosSeEmailMudou(usuarioAnterior.email, usuarioAtualizado.email);
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtualizado));
+
+            document.getElementById('novaSenha').value = '';
+            document.getElementById('confirmaSenha').value = '';
+
+            exibirAlertaPerfil(res.dados.mensagem || 'Dados alterados com sucesso!', 'success');
+            atualizarMenuUsuario();
         }
 
-        // --- GESTÃO DE ENDEREÇOS ---
+        // --- GESTÃO DE ENDEREÇOS + VIACEP ---
+        function formatarCepModal(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 8);
+            if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
+            input.value = v;
+        }
+
+        async function consultarViaCEP(cepFormatado) {
+            const cepLimpo = cepFormatado.replace(/\D/g, '');
+            const alertaViaCep = document.getElementById('alertaViaCep');
+            alertaViaCep.classList.add('d-none');
+
+            if (cepLimpo.length !== 8) return;
+
+            try {
+                const resp = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                const dados = await resp.json();
+
+                if (dados.erro) {
+                    alertaViaCep.classList.remove('d-none');
+                    alertaViaCep.innerText = 'CEP não encontrado no ViaCEP. Preencha manualmente.';
+                    return;
+                }
+
+                if (dados.logradouro) document.getElementById('rua').value = dados.logradouro;
+                if (dados.bairro) document.getElementById('bairro').value = dados.bairro;
+                if (dados.localidade && dados.uf) {
+                    document.getElementById('cidadeEstado').value = `${dados.localidade} / ${dados.uf}`;
+                }
+            } catch (err) {
+                console.warn('Falha ao consultar ViaCEP:', err);
+            }
+        }
+
         function carregarEnderecos() {
-            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            const usuarioLogado = obterUsuarioAtual();
             if (!usuarioLogado) return;
             
             const container = document.getElementById('container-enderecos');
-            // Procura os endereços usando o email do utilizador como chave única
-            let enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
+            const enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
             
             if (enderecos.length === 0) {
                 container.innerHTML = '<div class="col-12 text-muted text-center py-4"><i class="bi bi-geo-alt fs-2 d-block mb-2"></i>Nenhum endereço cadastrado.</div>';
                 return;
             }
 
-            let html = '';
-            enderecos.forEach((end, index) => {
-                html += `
+            container.innerHTML = enderecos.map((end, index) => `
                 <div class="col-md-6">
                     <div class="card border p-3 h-100 position-relative">
-                        ${index === 0 ? '<span class="badge bg-secondary position-absolute top-0 end-0 m-3">Principal</span>' : ''}
-                        <h6 class="fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>${end.rotulo}</h6>
+                        <input type="hidden" value="${index}">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h6 class="fw-bold mb-0"><i class="bi bi-geo-alt me-2"></i>${end.rotulo}</h6>
+                            <div class="d-flex align-items-center gap-2">
+                                ${index === 0 ? '<span class="badge bg-secondary">Principal</span>' : ''}
+                                <button type="button" class="btn btn-sm text-danger p-0 border-0" title="Excluir endereço" onclick="removerEndereco(${index})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
                         <p class="text-muted small mb-1">${end.rua}</p>
-                        <p class="text-muted small mb-1">${end.bairro} - Formosa / GO</p>
+                        <p class="text-muted small mb-1">${end.bairro} - ${end.cidadeEstado || 'Formosa / GO'}</p>
                         <p class="text-muted small mb-0">CEP: ${end.cep}</p>
                     </div>
-                </div>`;
-            });
-            container.innerHTML = html;
+                </div>
+            `).join('');
         }
 
         function adicionarEndereco(e) {
             e.preventDefault();
-            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            const usuarioLogado = obterUsuarioAtual();
             if (!usuarioLogado) return;
 
-            const rotulo = document.getElementById('rotulo').value;
-            const rua = document.getElementById('rua').value;
-            const bairro = document.getElementById('bairro').value;
-            const cep = document.getElementById('cep').value;
+            const novoEndereco = {
+                rotulo: document.getElementById('rotulo').value.trim(),
+                rua: document.getElementById('rua').value.trim(),
+                bairro: document.getElementById('bairro').value.trim(),
+                cidadeEstado: document.getElementById('cidadeEstado').value.trim(),
+                cep: document.getElementById('cep').value.trim()
+            };
 
-            // Salva na memória associado ao e-mail do cliente
-            let enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
-            enderecos.push({ rotulo, rua, bairro, cep });
-            localStorage.setItem(`enderecos_${usuarioLogado.email}`, JSON.stringify(enderecos));
+            const enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
+            const listaAtualizada = [...enderecos, novoEndereco];
+            localStorage.setItem(`enderecos_${usuarioLogado.email}`, JSON.stringify(listaAtualizada));
 
-            // Fecha o modal via Bootstrap
             const modalEl = document.getElementById('modalEndereco');
             const modal = bootstrap.Modal.getInstance(modalEl);
-            modal.hide();
+            if (modal) modal.hide();
 
-            // Limpa o formulário e redesenha a lista
             document.getElementById('formNovoEndereco').reset();
             carregarEnderecos(); 
         }
 
-        function fazerLogout(e) {
-            e.preventDefault();
-            localStorage.removeItem('usuarioLogado');
-            window.location.href = 'index.html';
+        function removerEndereco(indice) {
+            const usuarioLogado = obterUsuarioAtual();
+            if (!usuarioLogado) return;
+
+            const enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuarioLogado.email}`)) || [];
+            const listaFiltrada = enderecos.filter((_, idx) => idx !== indice);
+            localStorage.setItem(`enderecos_${usuarioLogado.email}`, JSON.stringify(listaFiltrada));
+            carregarEnderecos();
         }
 
-        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            atualizarBadgeCarrinho();
-            atualizarMenuUsuario();
             carregarDados();
-            carregarEnderecos(); // Renderiza os endereços salvos
-            
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-            [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+            carregarEnderecos();
         });
     </script>
-
-    <script>
-    // Função que aplica o tema do Bootstrap baseado no sistema operacional
-    function aplicarTemaDoSistema() {
-        // Verifica se o navegador/sistema está no modo escuro
-        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Define o atributo do Bootstrap na tag <html>
-        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
-    }
-
-    // Aplica o tema assim que a página carrega
-    aplicarTemaDoSistema();
-
-    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
-</script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

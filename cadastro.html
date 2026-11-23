@@ -16,12 +16,10 @@
     <header class="navbar" style="justify-content: center;">
         <div class="brand">
             <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
-                <!-- Removida a classe paginainicial-img e adicionado o style inline -->
                 <img src="img/logo-paginainicial.jpg" alt="Icone Home" style="height: 80px; width: auto;">
             </a>
         </div>
     </header>
-
 
     <main class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
         
@@ -35,7 +33,7 @@
             
             <div id="alertMsg" class="alert d-none text-center fw-bold" role="alert"></div>
 
-            <form id="formCadastro" onsubmit="cadastrarUsuario(event)">
+            <form id="formCadastro" onsubmit="cadastrarUsuario(event)" novalidate>
                 
                 <div class="mb-3">
                     <label for="nome" class="form-label fw-semibold text-dark">Nome Completo</label>
@@ -50,7 +48,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="senha" class="form-label fw-semibold text-dark">Senha</label>
-                        <input type="password" class="form-control bg-light p-3" id="senha" placeholder="Crie uma senha" required>
+                        <input type="password" class="form-control bg-light p-3" id="senha" placeholder="Mínimo 6 caracteres" required>
                     </div>
                     <div class="col-md-6 mb-4">
                         <label for="confirmaSenha" class="form-label fw-semibold text-dark">Confirmar Senha</label>
@@ -58,7 +56,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn w-100 py-3 fw-bold rounded-pill btn-voltar-premium">
+                <button type="submit" id="btnCadastrar" class="btn w-100 py-3 fw-bold rounded-pill btn-voltar-premium">
                     Cadastrar
                 </button>
             </form>
@@ -70,71 +68,74 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/global.js"></script>
     
-    <!-- Lógica Exigida pelo PDF -->
+    <!-- Integração com POST /api/register -->
     <script>
-        function cadastrarUsuario(event) {
+        async function cadastrarUsuario(event) {
             event.preventDefault();
 
             const nome = document.getElementById('nome').value.trim();
-            const email = document.getElementById('email').value.trim().toLowerCase();
+            const email = document.getElementById('email').value.trim();
             const senha = document.getElementById('senha').value;
-            const confirmaSenha = document.getElementById('confirmaSenha').value;
+            const confirmacaoSenha = document.getElementById('confirmaSenha').value;
             const alertMsg = document.getElementById('alertMsg');
+            const btnCadastrar = document.getElementById('btnCadastrar');
 
-            if (senha !== confirmaSenha) {
-                alertMsg.className = 'alert alert-danger';
-                alertMsg.innerText = 'As senhas não coincidem. Tente novamente!';
+            // Desabilita o botão durante a requisição para evitar duplo clique
+            btnCadastrar.disabled = true;
+            btnCadastrar.innerText = 'Cadastrando...';
+
+            const res = await requisicaoAPI('/api/register', {
+                method: 'POST',
+                body: JSON.stringify({
+                    nome,
+                    email,
+                    senha,
+                    confirmacaoSenha
+                })
+            });
+
+            btnCadastrar.disabled = false;
+            btnCadastrar.innerText = 'Cadastrar';
+
+            // Tratamento individual de cada status HTTP exigido
+           if (res.status === 201) {
+                // Salva a sessão do usuário recém-cadastrado no localStorage
+                localStorage.setItem('usuarioLogado', JSON.stringify({ nome, email }));
+
+                alertMsg.className = 'alert alert-success text-center fw-bold';
+                alertMsg.innerText = res.dados.mensagem || 'Cadastro realizado com sucesso! Redirecionando...';
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
                 return;
             }
 
-            // 1. Puxa a lista de usuários salvos (ou cria uma vazia se não existir)
-            let usuarios = JSON.parse(localStorage.getItem('usuariosCadastrados')) || [];
-
-            // 2. Verifica se o e-mail já existe na lista
-            let emailJaExiste = usuarios.find(u => u.email === email);
-            if (emailJaExiste) {
-                alertMsg.className = 'alert alert-warning';
-                alertMsg.innerText = 'Este e-mail já está cadastrado. Vá para a tela de login!';
+            if (res.status === 400) {
+                alertMsg.className = 'alert alert-danger text-center fw-bold';
+                alertMsg.innerText = res.dados.mensagem || 'Preencha todos os campos corretamente e verifique se as senhas coincidem.';
                 return;
             }
 
-            // 3. Adiciona o novo usuário na lista
-            const novoUsuario = { nome, email, senha };
-            usuarios.push(novoUsuario);
+            if (res.status === 409) {
+                alertMsg.className = 'alert alert-warning text-center fw-bold';
+                alertMsg.innerText = res.dados.mensagem || 'Este e-mail já está cadastrado.';
+                return;
+            }
 
-            // 4. Salva a lista inteira de volta na memória
-            localStorage.setItem('usuariosCadastrados', JSON.stringify(usuarios));
-            
-            // Faz o login automático
-            localStorage.setItem('usuarioLogado', JSON.stringify({ nome, email }));
+            if (res.status === 422) {
+                alertMsg.className = 'alert alert-warning text-center fw-bold';
+                alertMsg.innerText = res.dados.mensagem || 'A senha deve ter no mínimo 6 caracteres.';
+                return;
+            }
 
-            alertMsg.className = 'alert alert-success';
-            alertMsg.innerText = 'Conta criada com sucesso! Redirecionando...';
-
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1500);
+            // Fallback para erro de rede ou outro código inesperado
+            alertMsg.className = 'alert alert-danger text-center fw-bold';
+            alertMsg.innerText = res.mensagem || 'Erro ao realizar cadastro. Tente novamente.';
         }
     </script>
-
-    <script>
-    // Função que aplica o tema do Bootstrap baseado no sistema operacional
-    function aplicarTemaDoSistema() {
-        // Verifica se o navegador/sistema está no modo escuro
-        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Define o atributo do Bootstrap na tag <html>
-        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
-    }
-
-    // Aplica o tema assim que a página carrega
-    aplicarTemaDoSistema();
-
-    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
-</script>
-
 
 </body>
 </html>

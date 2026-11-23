@@ -6,20 +6,12 @@
     <title>Meu Carrinho - Óticas Visão</title>
     <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="css/carrinho.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-    rel="stylesheet">
-
-    <link rel="stylesheet" 
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <link rel="icon" type="image/svg+xml" 
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/eyeglasses.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
- rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -31,337 +23,717 @@
             <ul class="dropdown-menu dropdown-menu-start me-3" id="menuUsuario"></ul>
         </div>
 
-
-        <div class="caixa-pesquisa">
-            <input type="text" placeholder="Buscar modelos, marcas...">
+        <form class="caixa-pesquisa" action="pagdeprodutos.html" method="GET">
+            <input type="text" name="busca" placeholder="Buscar produtos, categorias...">
             <button type="submit">Buscar</button>
-        </div>
+        </form>
             
         <div class="brand">
             <a href="index.html" class="paginainicial-icone" aria-label="Página Inicial">
                 <img src="img/logo-paginainicial.jpg" alt="Icone Home" class="paginainicial-img">
             </a>
-           
-        </div>
-
         </div>
     </header>
 
     <main class="container my-5 flex-grow-1">
         <h2 class="mb-4">Seu Carrinho de Compras</h2>
 
+        <!-- Aviso de limite de estoque -->
+        <div id="alerta-estoque" class="alert alert-warning py-2 px-3 d-none mb-3" role="alert"></div>
+
         <div class="row g-4">
-            <!-- Coluna da Esquerda: Onde o JavaScript vai injetar os produtos -->
-            <div class="col-lg-8" id="lista-carrinho">
-                <!-- O JavaScript vai colocar os cards dos produtos aqui dentro -->
-            </div>
+            <!-- Coluna da Esquerda: Lista de Produtos do localStorage -->
+            <div class="col-lg-8" id="lista-carrinho"></div>
 
-           <!-- Coluna da Direita: Resumo do Pedido -->
-<div class="col-lg-4">
-    <div class="card shadow-sm border-0 bg-light">
-        <div class="card-body p-4">
-            <h3 class="card-title h5 mb-4">Resumo da Compra</h3>
-            
-            <div class="d-flex justify-content-between mb-2 text-muted">
-                <span id="qtd-itens-resumo">Subtotal (0 itens)</span>
-                <span id="subtotal-resumo">R$ 0,00</span>
-            </div>
-            
-            <div class="d-flex justify-content-between mb-4">
-                <span class="text-muted">Frete</span>
-                <span class="text-success fw-bold">Grátis</span>
-            </div>
-            
-            <hr>
-            
-            <div class="d-flex justify-content-between fw-bold fs-5 mb-4 mt-3">
-                <span>Total</span>
-                <span id="total-resumo">R$ 0,00</span>
-            </div>
-            
-            <!-- O JAVASCRIPT VAI INJETAR O AVISO E O BOTÃO AQUI DENTRO -->
-            <div id="area-checkout"></div>
+            <!-- Coluna da Direita: Resumo do Pedido -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 bg-light">
+                    <div class="card-body p-4">
+                        <h3 class="card-title h5 mb-4">Resumo da Compra</h3>
 
-        </div>
-    </div>
-</div>
+                        <!-- ETAPA 2: CÁLCULO DE FRETE -->
+                        <div id="secao-frete" class="mb-3">
+                            <div id="box-enderecos-salvos" class="mb-2 d-none">
+                                <label for="select-endereco-carrinho" class="form-label small fw-semibold text-muted mb-1">
+                                    Usar endereço salvo:
+                                </label>
+                                <select id="select-endereco-carrinho" class="form-select form-select-sm" onchange="selecionarEnderecoSalvo(this.value)">
+                                    <option value="">Digite um CEP ou escolha...</option>
+                                </select>
+                            </div>
+
+                            <label for="input-cep" class="form-label small fw-semibold mb-1">Calcular Frete (CEP)</label>
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="text" id="input-cep" class="form-control" placeholder="00000-000" maxlength="9" oninput="aplicarMascaraCEP(this)">
+                                <button type="button" id="btn-calcular-frete" class="btn btn-outline-dark fw-semibold" onclick="calcularFrete()">
+                                    Calcular Frete
+                                </button>
+                            </div>
+
+                            <!-- Alertas de erro do Frete (400, 404, 422) -->
+                            <div id="alerta-frete" class="alert alert-danger py-2 px-3 small d-none mb-2" role="alert"></div>
+
+                            <!-- Opções de Frete (Radio Buttons) -->
+                            <div id="opcoes-frete" class="d-flex flex-column gap-2 mt-2"></div>
+                        </div>
+
+                        <!-- ETAPA 3: CUPOM DE DESCONTO -->
+                        <div id="secao-cupom" class="mb-3">
+                            <label for="input-cupom" class="form-label small fw-semibold mb-1">Cupom de Desconto</label>
+                            <div class="input-group input-group-sm mb-2">
+                                <input type="text" id="input-cupom" class="form-control text-uppercase" placeholder="Ex: TADS10, VIP50">
+                                <button type="button" id="btn-aplicar-cupom" class="btn btn-outline-dark fw-semibold" onclick="aplicarCupom()">
+                                    Aplicar
+                                </button>
+                            </div>
+
+                            <!-- Alertas de erro ou sucesso do Cupom (400, 404, 410, 422) -->
+                            <div id="alerta-cupom" class="alert py-2 px-3 small d-none mb-2" role="alert"></div>
+
+                            <!-- Tag do cupom ativo com opção de remover -->
+                            <div id="badge-cupom-ativo" class="d-none justify-content-between align-items-center bg-success-subtle text-success-emphasis border border-success-subtle rounded px-2 py-1 small">
+                                <span id="texto-cupom-ativo" class="fw-semibold"></span>
+                                <button type="button" class="btn btn-sm text-danger p-0 border-0 fw-bold" onclick="removerCupom()">Remover</button>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2 text-muted">
+                            <span id="qtd-itens-resumo">Subtotal (0 itens)</span>
+                            <span id="subtotal-resumo">R$ 0,00</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Frete</span>
+                            <span id="frete-resumo" class="text-muted">Calcule o CEP</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3 d-none" id="linha-desconto">
+                            <span class="text-success">Desconto</span>
+                            <span id="desconto-resumo" class="text-success fw-bold">- R$ 0,00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between fw-bold fs-5 mb-4 mt-3">
+                            <span>Total</span>
+                            <span id="total-resumo">R$ 0,00</span>
+                        </div>
+                        
+                        <!-- ETAPA 4: FORMA DE PAGAMENTO E BOTÃO FINALIZAR PEDIDO -->
+                        <div id="area-checkout"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
     <footer class="bg-light mt-5 py-4 border-top">
-    <div class="container text-center">
-        
-        <div class="row mb-4">
-            <div class="col-12 d-flex flex-column flex-md-row justify-content-center gap-4">
-                
-                <!-- Link do WhatsApp como botão -->
-                <a href="https://wa.me/5561996696971" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
-                    <i class="bi bi-whatsapp fs-4 social-icon"></i>
-                    <span class="fw-bold">Converse com um Consultor Ótico!</span>
-                </a>
-               
-                <!-- Link do Instagram como botão -->
-                <a href="https://www.instagram.com/oticasvisaoformosa/" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
-                    <i class="bi bi-instagram fs-4 social-icon"></i>
-                    <span class="fw-bold">Nos siga no Instagram</span>
-                </a>
-
-               
+        <div class="container text-center">
+            <div class="row mb-4">
+                <div class="col-12 d-flex flex-column flex-md-row justify-content-center gap-4">
+                    <a href="https://wa.me/5561996696971" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                        <i class="bi bi-whatsapp fs-4 social-icon"></i>
+                        <span class="fw-bold">Converse com um Consultor Ótico!</span>
+                    </a>
+                    <a href="https://www.instagram.com/oticasvisaoformosa/" target="_blank" class="btn btn-light d-flex align-items-center justify-content-center gap-2 text-dark px-3 py-2 btn-contato">
+                        <i class="bi bi-instagram fs-4 social-icon"></i>
+                        <span class="fw-bold">Nos siga no Instagram</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <hr class="text-muted">
+                    <p class="mb-0 text-muted small">&copy; 2026 Óticas Visão. Todos os direitos reservados.</p>
+                </div>
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col-12">
-                <hr class="text-muted">
-                <p class="mb-0 text-muted small">&copy; 2026 Óticas Visão. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<script>
-    // Função para formatar números para Moeda (Real brasileiro)
-    const formatarMoeda = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/global.js"></script>
 
-    // Função principal que lê a memória e desenha o carrinho
-    function renderizarCarrinho() {
-        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
-        const container = document.getElementById('lista-carrinho');
-        const qtdResumo = document.getElementById('qtd-itens-resumo');
-        const subtotalResumo = document.getElementById('subtotal-resumo');
-        const totalResumo = document.getElementById('total-resumo');
-        const areaCheckout = document.getElementById('area-checkout');
+    <script>
+        const formatarMoeda = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        // Mapa de estoque obtido da API: { idProduto: stock }
+        let mapaEstoque = {};
 
-        // Se o carrinho estiver vazio
-        if (carrinho.length === 0) {
-            container.innerHTML = `
-                <div class="alert alert-secondary text-center p-5 border-0 shadow-sm">
-                    <h4>Seu carrinho está vazio!</h4>
-                    <p>Você ainda não adicionou nenhum óculos.</p>
-                    <a href="pagdeprodutos.html" class="btn btn-dark mt-3">Ver Produtos</a>
-                </div>`;
-            qtdResumo.innerText = `Subtotal (0 itens)`;
-            subtotalResumo.innerText = `R$ 0,00`;
-            totalResumo.innerText = `R$ 0,00`;
-            areaCheckout.innerHTML = ''; 
-            atualizarBadgeCarrinho();
-            ativarTooltips(); 
-            return;
-        } // <- AQUI FECHA O IF (E REMOVEMOS A CHAVE EXTRA QUE ESTAVA AQUI)
+        // Estado centralizado do carrinho (compartilhado entre Frete, Cupom e Checkout)
+        const estadoCarrinho = {
+            subtotal: 0,
+            totalItens: 0,
+            cep: '',
+            freteSelecionado: null,
+            cupomAplicado: null,
+            descontoValor: 0,
+            totalFinal: 0,
+            enderecoSelecionadoTexto: ''
+        };
 
-        let html = '';
-        let totalVlr = 0;
-        let totalItens = 0;
+        // Busca os estoques atualizados dos produtos na API
+        async function carregarEstoquesAPI() {
+            const res = await requisicaoAPI('/api/products');
+            if (res.ok && res.dados && Array.isArray(res.dados.products)) {
+                res.dados.products.forEach(p => {
+                    mapaEstoque[p.id] = p.stock;
+                });
+            }
+        }
 
-        carrinho.forEach(produto => {
-            let subtotalProduto = produto.preco * produto.quantidade;
-            totalVlr += subtotalProduto;
-            totalItens += produto.quantidade;
+        // Etapa 1: Renderiza os itens do localStorage (carrinhoOtica) respeitando o estoque
+        function renderizarCarrinho() {
+            let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+            const container = document.getElementById('lista-carrinho');
+            const qtdResumo = document.getElementById('qtd-itens-resumo');
+            const subtotalResumo = document.getElementById('subtotal-resumo');
+            const areaCheckout = document.getElementById('area-checkout');
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 
-            html += `
-            <div class="card shadow-sm border-0 mb-3">
-                <div class="row g-0 align-items-center p-3">
-                    <div class="col-4 col-sm-3 text-center">
-                        <img src="${produto.imagem}" class="img-fluid rounded" alt="${produto.titulo}" style="max-height: 90px; object-fit: contain;">
-                    </div>
-                    <div class="col-8 col-sm-9">
-                        <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center py-0">
-                            <div class="mb-2 mb-sm-0">
-                                <h5 class="card-title fs-6 fw-bold mb-1">${produto.titulo}</h5>
-                                <p class="card-text text-danger fw-bold mb-0">${formatarMoeda(produto.preco)}</p>
-                            </div>
-                            <div class="d-flex align-items-center gap-3 mt-2 mt-sm-0">
-                                <input type="number" class="form-control text-center shadow-none" value="${produto.quantidade}" min="1" style="width: 70px; border-color: #ccc;" onchange="alterarQuantidade(${produto.id}, this.value)">
-                                <button class="btn btn-sm text-muted text-decoration-underline border-0 p-0" onclick="removerItem(${produto.id})">Remover</button>
+            if (carrinho.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-secondary text-center p-5 border-0 shadow-sm">
+                        <h4>Seu carrinho está vazio!</h4>
+                        <p>Você ainda não adicionou nenhum produto.</p>
+                        <a href="pagdeprodutos.html" class="btn btn-dark mt-3">Ver Produtos</a>
+                    </div>`;
+                qtdResumo.innerText = 'Subtotal (0 itens)';
+                subtotalResumo.innerText = 'R$ 0,00';
+                areaCheckout.innerHTML = '';
+                estadoCarrinho.subtotal = 0;
+                estadoCarrinho.totalItens = 0;
+                recalcularTotais();
+                atualizarBadgeCarrinho();
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+            let totalItens = 0;
+            let ajustouEstoque = false;
+
+            carrinho.forEach(produto => {
+                // Verifica o estoque real retornado pela API (fallback para produto.stock se já salvo)
+                const estoqueDisponivel = mapaEstoque[produto.id] !== undefined
+                    ? mapaEstoque[produto.id]
+                    : (produto.stock !== undefined ? produto.stock : 99);
+
+                // Se a quantidade no carrinho estiver maior que o estoque disponível, ajusta
+                if (estoqueDisponivel > 0 && produto.quantidade > estoqueDisponivel) {
+                    produto.quantidade = estoqueDisponivel;
+                    ajustouEstoque = true;
+                }
+
+                const subtotalItem = produto.preco * produto.quantidade;
+                subtotal += subtotalItem;
+                totalItens += produto.quantidade;
+
+                const textoEstoque = mapaEstoque[produto.id] !== undefined
+                    ? `<small class="d-block text-muted">Estoque disponível: <strong>${estoqueDisponivel}</strong> un.</small>`
+                    : '';
+
+                html += `
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="row g-0 align-items-center p-3">
+                        <div class="col-4 col-sm-3 text-center">
+                            <img src="${produto.imagem}" class="img-fluid rounded" alt="${produto.titulo}" style="max-height: 90px; object-fit: contain;">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center py-0">
+                                <div class="mb-2 mb-sm-0">
+                                    <h5 class="card-title fs-6 fw-bold mb-1">${produto.titulo}</h5>
+                                    <p class="card-text text-danger fw-bold mb-0">${formatarMoeda(produto.preco)}</p>
+                                    <small class="text-muted">Subtotal item: ${formatarMoeda(subtotalItem)}</small>
+                                    ${textoEstoque}
+                                </div>
+                                <div class="d-flex align-items-center gap-3 mt-2 mt-sm-0">
+                                    <input type="number" class="form-control text-center shadow-none" value="${produto.quantidade}" min="1" max="${estoqueDisponivel > 0 ? estoqueDisponivel : 1}" style="width: 75px; border-color: #ccc;" onchange="alterarQuantidade(${produto.id}, this.value)">
+                                    <button class="btn btn-sm text-muted text-decoration-underline border-0 p-0" onclick="removerItem(${produto.id})">Remover</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>`;
-        });
+                </div>`;
+            });
 
-        // Atualiza a lista na tela
-        container.innerHTML = html;
-        
-        // Texto dinâmico do plural
-        let textoItens = totalItens === 1 ? '1 item' : `${totalItens} itens`;
-        qtdResumo.innerText = `Subtotal (${textoItens})`;
-        
-        subtotalResumo.innerText = formatarMoeda(totalVlr);
-        totalResumo.innerText = formatarMoeda(totalVlr);
+            if (ajustouEstoque) {
+                localStorage.setItem('carrinhoOtica', JSON.stringify(carrinho));
+            }
 
-        // ---- BLOQUEIO E TOOLTIP ----
-        if (usuarioLogado) {
-            // Se logado: Injeta o botão com a Tooltip chamando a função de finalizar
+            container.innerHTML = html;
+
+            const textoItens = totalItens === 1 ? '1 item' : `${totalItens} itens`;
+            qtdResumo.innerText = `Subtotal (${textoItens})`;
+            subtotalResumo.innerText = formatarMoeda(subtotal);
+
+            estadoCarrinho.subtotal = subtotal;
+            estadoCarrinho.totalItens = totalItens;
+
+            recalcularTotais();
+            renderizarAreaCheckout(usuarioLogado);
+            atualizarBadgeCarrinho();
+        }
+
+        // Etapa 4: Renderiza a seleção de pagamento e o botão Finalizar Pedido
+        function renderizarAreaCheckout(usuarioLogado) {
+            const areaCheckout = document.getElementById('area-checkout');
+            if (!areaCheckout) return;
+
+            if (!usuarioLogado) {
+                areaCheckout.innerHTML = `
+                    <div class="alert alert-warning text-center p-2 mb-3" role="alert" style="font-size: 0.9rem;">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> 
+                        Para finalizar a compra, inicie sessão na sua conta.
+                    </div>
+                    <a href="login.html" class="btn btn-dark w-100 fw-bold py-3">
+                       Fazer Login para Finalizar
+                    </a>
+                `;
+                return;
+            }
+
+            // Preserva a escolha atual caso o usuário mude a quantidade de itens
+            const metodoAtual = document.querySelector('input[name="metodoPagamento"]:checked')?.value || 'pix';
+            const cartaoAtual = document.getElementById('input-numero-cartao')?.value || '';
+
             areaCheckout.innerHTML = `
-                <button onclick="finalizarPedido(event)" class="btn w-100 fw-bold py-3 btn-voltar-premium" 
-                   data-bs-toggle="tooltip" 
-                   data-bs-placement="top" 
-                   title="Finalize agora para garantir o frete grátis!">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold mb-2">Forma de Pagamento</label>
+                    <div class="d-flex flex-column gap-2">
+                        <label class="border rounded p-2 d-flex align-items-center gap-2 bg-white small" style="cursor: pointer;">
+                            <input class="form-check-input mt-0" type="radio" name="metodoPagamento" value="pix" ${metodoAtual === 'pix' ? 'checked' : ''} onchange="alternarCampoCartao()">
+                            <i class="bi bi-qr-code text-success"></i>
+                            <span class="fw-semibold">PIX (Aprovação imediata)</span>
+                        </label>
+                        <label class="border rounded p-2 d-flex align-items-center gap-2 bg-white small" style="cursor: pointer;">
+                            <input class="form-check-input mt-0" type="radio" name="metodoPagamento" value="boleto" ${metodoAtual === 'boleto' ? 'checked' : ''} onchange="alternarCampoCartao()">
+                            <i class="bi bi-upc-scan text-dark"></i>
+                            <span class="fw-semibold">Boleto Bancário</span>
+                        </label>
+                        <label class="border rounded p-2 d-flex align-items-center gap-2 bg-white small" style="cursor: pointer;">
+                            <input class="form-check-input mt-0" type="radio" name="metodoPagamento" value="cartao" ${metodoAtual === 'cartao' ? 'checked' : ''} onchange="alternarCampoCartao()">
+                            <i class="bi bi-credit-card text-primary"></i>
+                            <span class="fw-semibold">Cartão de Crédito</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Campo condicional: aparece apenas quando "cartao" for selecionado -->
+                <div id="box-numero-cartao" class="mb-3 ${metodoAtual === 'cartao' ? '' : 'd-none'}">
+                    <label for="input-numero-cartao" class="form-label small fw-semibold mb-1">Número do Cartão</label>
+                    <input type="text" id="input-numero-cartao" class="form-control form-control-sm" placeholder="Ex: 4111222233334444" maxlength="19" value="${cartaoAtual}">
+                    <small class="text-muted" style="font-size: 0.75rem;">Dica de teste: final 0000 simula cartão recusado (erro 402).</small>
+                </div>
+
+                <!-- Alertas de erro do Checkout (400, 402, 404, 422) -->
+                <div id="alerta-checkout" class="alert alert-danger py-2 px-3 small d-none mb-3" role="alert"></div>
+
+                <button type="button" id="btn-finalizar-pedido" onclick="finalizarPedido(event)" class="btn w-100 fw-bold py-3 btn-voltar-premium">
                    Finalizar Pedido
                 </button>
             `;
-            
-            ativarTooltips();
-
-        } else {
-            // Se não logado: Pede para fazer Login
-            areaCheckout.innerHTML = `
-                <div class="alert alert-warning text-center p-2 mb-3" role="alert" style="font-size: 0.9rem;">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i> 
-                    Para finalizar a compra, inicie sessão na sua conta.
-                </div>
-                <a href="login.html" class="btn btn-dark w-100 fw-bold py-3">
-                   Fazer Login para Finalizar
-                </a>
-            `;
         }
-        
-        atualizarBadgeCarrinho();
-    } 
-    
 
-// Função para finalizar a compra, salvar nos pedidos e limpar o carrinho
-    function finalizarPedido(e) {
-        e.preventDefault();
-        
-        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
-        if (carrinho.length === 0) return;
+        function alternarCampoCartao() {
+            const metodo = document.querySelector('input[name="metodoPagamento"]:checked')?.value;
+            const boxCartao = document.getElementById('box-numero-cartao');
+            if (!boxCartao) return;
 
-        // 1. Cria o "Recibo" do pedido
-        let novoPedido = {
-            id: Math.floor(Math.random() * 10000), // Gera um número de pedido aleatório
-            data: new Date().toLocaleDateString('pt-BR'),
-            status: 'Em Separação',
-            totalItens: carrinho.reduce((total, p) => total + p.quantidade, 0),
-            valorTotal: carrinho.reduce((total, p) => total + (p.preco * p.quantidade), 0),
-            itens: carrinho
-        };
+            if (metodo === 'cartao') {
+                boxCartao.classList.remove('d-none');
+            } else {
+                boxCartao.classList.add('d-none');
+            }
+        }
 
-        // 2. Guarda na lista de Pedidos da conta
-        let pedidos = JSON.parse(localStorage.getItem('pedidosOtica')) || [];
-        pedidos.push(novoPedido);
-        localStorage.setItem('pedidosOtica', JSON.stringify(pedidos));
+        // Etapa 4: Chama POST /api/checkout e trata 201, 400, 402, 404 e 422
+        async function finalizarPedido(e) {
+            e.preventDefault();
 
-        // 3. Esvazia o carrinho e vai para a página de sucesso
-        localStorage.removeItem('carrinhoOtica');
-        window.location.href = 'sucesso-pedido.html';
-    }
-   
+            const carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+            const alertaCheckout = document.getElementById('alerta-checkout');
+            const btnFinalizar = document.getElementById('btn-finalizar-pedido');
 
-    function alterarQuantidade(id, novaQtd) {
-        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
-        let produto = carrinho.find(p => p.id === id);
-        if (produto) {
-            produto.quantidade = parseInt(novaQtd) > 0 ? parseInt(novaQtd) : 1;
+            alertaCheckout.classList.add('d-none');
+
+            const cep = document.getElementById('input-cep')?.value.trim() || '';
+            const metodoPagamento = document.querySelector('input[name="metodoPagamento"]:checked')?.value || '';
+            const numeroCartao = document.getElementById('input-numero-cartao')?.value.replace(/\s+/g, '') || '';
+
+            const payload = {
+                itens: carrinho.map(item => ({ id: item.id, quantidade: item.quantidade })),
+                cep,
+                metodoPagamento
+            };
+
+            if (metodoPagamento === 'cartao') {
+                payload.numeroCartao = numeroCartao;
+            }
+
+            btnFinalizar.disabled = true;
+            btnFinalizar.innerText = 'Processando pedido...';
+
+            const res = await requisicaoAPI('/api/checkout', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            btnFinalizar.disabled = false;
+            btnFinalizar.innerText = 'Finalizar Pedido';
+
+            // Tratamento individual de erros exigidos (400, 402, 404, 422)
+            if (res.status === 400) {
+                alertaCheckout.className = 'alert alert-danger py-2 px-3 small mb-3';
+                alertaCheckout.innerText = res.dados.mensagem || 'Verifique o carrinho, CEP válido e dados de pagamento.';
+                return;
+            }
+
+            if (res.status === 402) {
+                alertaCheckout.className = 'alert alert-danger py-2 px-3 small mb-3';
+                alertaCheckout.innerText = res.dados.mensagem || 'Pagamento recusado pela operadora do cartão.';
+                return;
+            }
+
+            if (res.status === 404) {
+                alertaCheckout.className = 'alert alert-warning py-2 px-3 small mb-3';
+                alertaCheckout.innerText = res.dados.mensagem || 'Um ou mais produtos do carrinho não foram encontrados.';
+                return;
+            }
+
+            if (res.status === 422) {
+                alertaCheckout.className = 'alert alert-warning py-2 px-3 small mb-3';
+                alertaCheckout.innerText = res.dados.mensagem || 'Estoque insuficiente para um dos itens do carrinho.';
+                return;
+            }
+
+            if (!res.ok || !res.dados.pedido) {
+                alertaCheckout.className = 'alert alert-danger py-2 px-3 small mb-3';
+                alertaCheckout.innerText = res.mensagem || 'Erro ao finalizar o pedido.';
+                return;
+            }
+
+            // 201 Created: Guarda o pedido completo no localStorage (pedidosOtica)
+            const pedidoAPI = res.dados.pedido;
+            const novoPedido = {
+                protocolo: pedidoAPI.protocolo,
+                data: new Date().toLocaleDateString('pt-BR'),
+                status: pedidoAPI.status || 'Aprovado',
+                cep: pedidoAPI.cep || cep,
+                endereco: estadoCarrinho.enderecoSelecionadoTexto || '',
+                metodoPagamento: pedidoAPI.metodoPagamento || metodoPagamento,
+                totalItens: pedidoAPI.totalItens || estadoCarrinho.totalItens,
+                valorProdutos: pedidoAPI.valorProdutos || estadoCarrinho.subtotal,
+                valorFrete: estadoCarrinho.freteSelecionado ? estadoCarrinho.freteSelecionado.valor : 0,
+                servicoFrete: estadoCarrinho.freteSelecionado ? estadoCarrinho.freteSelecionado.servico : '',
+                desconto: estadoCarrinho.descontoValor,
+                cupom: estadoCarrinho.cupomAplicado ? estadoCarrinho.cupomAplicado.codigo : null,
+                valorTotal: estadoCarrinho.totalFinal,
+                itens: carrinho
+            };
+
+            const pedidos = JSON.parse(localStorage.getItem('pedidosOtica')) || [];
+            pedidos.push(novoPedido);
+            localStorage.setItem('pedidosOtica', JSON.stringify(pedidos));
+
+            // Limpa o carrinho e redireciona para a tela de sucesso
+            localStorage.removeItem('carrinhoOtica');
+            window.location.href = 'sucesso-pedido.html';
+        }
+
+        // Calcula o total final considerando subtotal + frete - cupom
+        function recalcularTotais() {
+            const freteResumo = document.getElementById('frete-resumo');
+            const linhaDesconto = document.getElementById('linha-desconto');
+            const descontoResumo = document.getElementById('desconto-resumo');
+            const totalResumo = document.getElementById('total-resumo');
+
+            const valorFrete = estadoCarrinho.freteSelecionado ? estadoCarrinho.freteSelecionado.valor : 0;
+
+            if (estadoCarrinho.freteSelecionado) {
+                freteResumo.className = 'fw-bold text-dark';
+                freteResumo.innerText = formatarMoeda(valorFrete);
+            } else {
+                freteResumo.className = 'text-muted';
+                freteResumo.innerText = 'Calcule o CEP';
+            }
+
+            let descontoCalculado = 0;
+
+            if (estadoCarrinho.cupomAplicado) {
+                const { codigo, tipo, desconto } = estadoCarrinho.cupomAplicado;
+
+                if (codigo === 'VIP50' && estadoCarrinho.subtotal < 500) {
+                    removerCupom('O cupom VIP50 foi removido pois o subtotal ficou abaixo de R$ 500,00.');
+                    return;
+                }
+
+                if (tipo === 'percentual') {
+                    descontoCalculado = estadoCarrinho.subtotal * (desconto / 100);
+                } else if (tipo === 'frete_gratis') {
+                    if (estadoCarrinho.freteSelecionado) {
+                        const ehPAC = estadoCarrinho.freteSelecionado.servico.toUpperCase().includes('PAC');
+                        descontoCalculado = ehPAC ? valorFrete : Math.min(valorFrete, 20);
+                    } else {
+                        descontoCalculado = 0;
+                    }
+                } else if (tipo === 'fixo') {
+                    descontoCalculado = desconto;
+                }
+            }
+
+            estadoCarrinho.descontoValor = descontoCalculado;
+
+            if (estadoCarrinho.cupomAplicado) {
+                linhaDesconto.classList.remove('d-none');
+                descontoResumo.innerText = `- ${formatarMoeda(descontoCalculado)}`;
+            } else {
+                linhaDesconto.classList.add('d-none');
+                descontoResumo.innerText = '- R$ 0,00';
+            }
+
+            estadoCarrinho.totalFinal = Math.max(0, estadoCarrinho.subtotal + valorFrete - estadoCarrinho.descontoValor);
+            totalResumo.innerText = formatarMoeda(estadoCarrinho.totalFinal);
+        }
+
+        function aplicarMascaraCEP(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 8);
+            if (v.length > 5) {
+                v = v.slice(0, 5) + '-' + v.slice(5);
+            }
+            input.value = v;
+        }
+
+        function carregarEnderecosNoCarrinho() {
+            const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (!usuario || !usuario.email) return;
+
+            const enderecos = JSON.parse(localStorage.getItem(`enderecos_${usuario.email}`)) || [];
+            const box = document.getElementById('box-enderecos-salvos');
+            const select = document.getElementById('select-endereco-carrinho');
+
+            if (enderecos.length > 0 && box && select) {
+                box.classList.remove('d-none');
+                enderecos.forEach((end, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = end.cep;
+                    const descricao = `${end.rotulo || 'Endereço ' + (index + 1)} - ${end.rua}${end.bairro ? ', ' + end.bairro : ''} (${end.cep})`;
+                    opt.textContent = descricao;
+                    opt.dataset.enderecoCompleto = descricao;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function selecionarEnderecoSalvo(cepEscolhido) {
+            const select = document.getElementById('select-endereco-carrinho');
+            const opcaoSelecionada = select?.options[select.selectedIndex];
+            estadoCarrinho.enderecoSelecionadoTexto = opcaoSelecionada?.dataset.enderecoCompleto || '';
+
+            if (!cepEscolhido) return;
+            const inputCep = document.getElementById('input-cep');
+            inputCep.value = cepEscolhido;
+            aplicarMascaraCEP(inputCep);
+            calcularFrete();
+        }
+
+        async function calcularFrete() {
+            const cepInput = document.getElementById('input-cep');
+            const cep = cepInput.value.trim();
+            const alertaFrete = document.getElementById('alerta-frete');
+            const opcoesFrete = document.getElementById('opcoes-frete');
+            const btnFrete = document.getElementById('btn-calcular-frete');
+
+            alertaFrete.classList.add('d-none');
+            opcoesFrete.innerHTML = '';
+            estadoCarrinho.freteSelecionado = null;
+            estadoCarrinho.cep = cep;
+            recalcularTotais();
+
+            btnFrete.disabled = true;
+            btnFrete.innerText = 'Calculando...';
+
+            const res = await requisicaoAPI('/api/frete', {
+                method: 'POST',
+                body: JSON.stringify({ cep })
+            });
+
+            btnFrete.disabled = false;
+            btnFrete.innerText = 'Calcular Frete';
+
+            if (res.status === 400) {
+                alertaFrete.className = 'alert alert-danger py-2 px-3 small mb-2';
+                alertaFrete.innerText = res.dados.mensagem || 'CEP inválido. Formato esperado: 99999-999.';
+                return;
+            }
+
+            if (res.status === 404) {
+                alertaFrete.className = 'alert alert-warning py-2 px-3 small mb-2';
+                alertaFrete.innerText = res.dados.mensagem || 'CEP não encontrado na base de dados.';
+                return;
+            }
+
+            if (res.status === 422) {
+                alertaFrete.className = 'alert alert-warning py-2 px-3 small mb-2';
+                alertaFrete.innerText = res.dados.mensagem || 'Não realizamos entregas para esta região.';
+                return;
+            }
+
+            if (!res.ok || !res.dados.fretes) {
+                alertaFrete.className = 'alert alert-danger py-2 px-3 small mb-2';
+                alertaFrete.innerText = res.mensagem || 'Erro ao calcular frete.';
+                return;
+            }
+
+            const listaFretes = res.dados.fretes;
+            opcoesFrete.innerHTML = listaFretes.map((frete, idx) => `
+                <label class="border rounded p-2 d-flex justify-content-between align-items-center bg-white" style="cursor: pointer; font-size: 0.85rem;">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="radio" name="opcaoFrete" id="frete-${idx}" value="${idx}" ${idx === 0 ? 'checked' : ''} onchange="selecionarOpcaoFrete(${idx})">
+                        <span class="fw-semibold d-block">${frete.servico}</span>
+                        <small class="text-muted">${frete.prazo}</small>
+                    </div>
+                    <span class="fw-bold text-dark">${formatarMoeda(frete.valor)}</span>
+                </label>
+            `).join('');
+
+            window.fretesDisponiveis = listaFretes;
+            selecionarOpcaoFrete(0);
+        }
+
+        function selecionarOpcaoFrete(indice) {
+            if (!window.fretesDisponiveis || !window.fretesDisponiveis[indice]) return;
+            estadoCarrinho.freteSelecionado = window.fretesDisponiveis[indice];
+            recalcularTotais();
+        }
+
+        async function aplicarCupom() {
+            const inputCupom = document.getElementById('input-cupom');
+            const codigo = inputCupom.value.trim().toUpperCase();
+            const alertaCupom = document.getElementById('alerta-cupom');
+            const btnCupom = document.getElementById('btn-aplicar-cupom');
+
+            alertaCupom.classList.add('d-none');
+
+            btnCupom.disabled = true;
+            btnCupom.innerText = 'Validando...';
+
+            const res = await requisicaoAPI('/api/cupom', {
+                method: 'POST',
+                body: JSON.stringify({
+                    codigo,
+                    subtotal: estadoCarrinho.subtotal
+                })
+            });
+
+            btnCupom.disabled = false;
+            btnCupom.innerText = 'Aplicar';
+
+            if (res.status === 400) {
+                alertaCupom.className = 'alert alert-danger py-2 px-3 small mb-2';
+                alertaCupom.innerText = res.dados.mensagem || 'Informe o código do cupom.';
+                return;
+            }
+
+            if (res.status === 404) {
+                alertaCupom.className = 'alert alert-danger py-2 px-3 small mb-2';
+                alertaCupom.innerText = res.dados.mensagem || 'Cupom inválido ou não encontrado.';
+                return;
+            }
+
+            if (res.status === 410) {
+                alertaCupom.className = 'alert alert-warning py-2 px-3 small mb-2';
+                alertaCupom.innerText = res.dados.mensagem || 'Este cupom já expirou.';
+                return;
+            }
+
+            if (res.status === 422) {
+                alertaCupom.className = 'alert alert-warning py-2 px-3 small mb-2';
+                alertaCupom.innerText = res.dados.mensagem || 'Este cupom exige compra mínima de R$ 500,00.';
+                return;
+            }
+
+            if (!res.ok || !res.dados.cupom) {
+                alertaCupom.className = 'alert alert-danger py-2 px-3 small mb-2';
+                alertaCupom.innerText = res.mensagem || 'Erro ao validar cupom.';
+                return;
+            }
+
+            estadoCarrinho.cupomAplicado = res.dados.cupom;
+
+            const badge = document.getElementById('badge-cupom-ativo');
+            const textoBadge = document.getElementById('texto-cupom-ativo');
+            badge.classList.remove('d-none');
+            badge.classList.add('d-flex');
+            textoBadge.innerText = `Cupom ${res.dados.cupom.codigo} aplicado!`;
+
+            alertaCupom.className = 'alert alert-success py-2 px-3 small mb-2';
+            if (res.dados.cupom.tipo === 'frete_gratis') {
+                alertaCupom.innerText = 'Cupom aplicado! Frete grátis no PAC ou R$ 20,00 de desconto nas demais modalidades.';
+            } else {
+                alertaCupom.innerText = res.dados.mensagem || 'Cupom aplicado com sucesso!';
+            }
+
+            recalcularTotais();
+        }
+
+        function removerCupom(mensagemAviso = '') {
+            estadoCarrinho.cupomAplicado = null;
+            estadoCarrinho.descontoValor = 0;
+
+            const badge = document.getElementById('badge-cupom-ativo');
+            const alertaCupom = document.getElementById('alerta-cupom');
+            badge.classList.add('d-none');
+            badge.classList.remove('d-flex');
+
+            if (mensagemAviso) {
+                alertaCupom.className = 'alert alert-warning py-2 px-3 small mb-2';
+                alertaCupom.innerText = mensagemAviso;
+            } else {
+                alertaCupom.classList.add('d-none');
+            }
+
+            recalcularTotais();
+        }
+
+        // Altera quantidade bloqueando valores maiores que o estoque disponível
+        function alterarQuantidade(id, novaQtd) {
+            const carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+            const produto = carrinho.find(p => p.id === id);
+            const alertaEstoque = document.getElementById('alerta-estoque');
+
+            if (produto) {
+                let qtd = parseInt(novaQtd) > 0 ? parseInt(novaQtd) : 1;
+                const estoqueMax = mapaEstoque[id] !== undefined ? mapaEstoque[id] : Infinity;
+
+                if (qtd > estoqueMax) {
+                    qtd = estoqueMax;
+                    if (alertaEstoque) {
+                        alertaEstoque.classList.remove('d-none');
+                        alertaEstoque.innerText = `Quantidade ajustada: o produto "${produto.titulo}" possui apenas ${estoqueMax} unidade(s) em estoque.`;
+                    }
+                } else if (alertaEstoque) {
+                    alertaEstoque.classList.add('d-none');
+                }
+
+                produto.quantidade = qtd;
+                localStorage.setItem('carrinhoOtica', JSON.stringify(carrinho));
+                renderizarCarrinho();
+            }
+        }
+
+        function removerItem(id) {
+            let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
+            carrinho = carrinho.filter(p => p.id !== id);
             localStorage.setItem('carrinhoOtica', JSON.stringify(carrinho));
             renderizarCarrinho();
         }
-    }
 
-    function removerItem(id) {
-        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
-        carrinho = carrinho.filter(p => p.id !== id);
-        localStorage.setItem('carrinhoOtica', JSON.stringify(carrinho));
-        renderizarCarrinho();
-    }
-
-    function atualizarBadgeCarrinho() {
-        let carrinho = JSON.parse(localStorage.getItem('carrinhoOtica')) || [];
-        let totalItens = carrinho.reduce((total, produto) => total + produto.quantidade, 0);
-        
-        const badge = document.querySelector('.cart-count');
-        if (badge) {
-            badge.innerText = totalItens;
-            badge.style.display = totalItens > 0 ? 'inline-block' : 'none';
-        }
-
-        const imgCarrinho = document.querySelector('.carrinho-img');
-        if (imgCarrinho) {
-            if (totalItens > 0) {
-                imgCarrinho.src = 'img/carrinho-cheio.png';
-                imgCarrinho.classList.add('carrinho-cheio');
-            } else {
-                imgCarrinho.src = 'img/carrinho.png';
-                imgCarrinho.classList.remove('carrinho-cheio');
-            }
-        }
-    }
-
-   function atualizarMenuUsuario() {
-            // Vai à memória procurar se há alguém logado
-            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-            const menuUsuario = document.getElementById('menuUsuario');
-
-            if (!menuUsuario) return;
-
-            if (usuarioLogado) {
-                // SE ESTIVER LOGADO: Mostra o Nome, Meus Dados, Meus Pedidos + Carrinho e Contato
-                menuUsuario.innerHTML = `
-                     <li><span class="dropdown-item-text fw-bold" style="color: #350909 !important; 
-                            ;">Olá, ${usuarioLogado.nome.split(' ')[0]}!</span></li>
-                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="index.html"><strong>Página Inicial</strong></a></li>
-                     <li><a class="dropdown-item" href="meus_pedidos.html"><strong>Meus Pedidos</strong></a></li>
-                     <li><a class="dropdown-item" href="meus_dados.html"><strong>Meus Dados</strong></a></li>
-                     <li><a class="dropdown-item" href="contato.html"><strong>Contato</strong></a></li>
-                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item text-danger"  onclick="fazerLogout(event)" style="color: #350909 !important;"><strong>Sair</strong></a></li>
-                `;
-            } else {
-                // SE NÃO ESTIVER LOGADO: Mostra a opção de Login + Carrinho e Contato
-                menuUsuario.innerHTML = `
-                     <li><a class="dropdown-item" href="login.html" style="color: #350909 !important;"><strong>Login / Cadastrar-se</strong></a></li>
-                     <li><a class="dropdown-item" href="carrinho.html" style="color: #350909 !important;"><strong>Carrinho</strong></a></li>
-                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="contato.html";"><strong>Contato</strong></a></li>
-                `;
-            }
-        }
-
-    // Função para apagar a memória e sair
-    function fazerLogout(e) {
-        e.preventDefault();
-        localStorage.removeItem('usuarioLogado');
-        window.location.reload(); // Recarrega a página para atualizar o menu
-    }
-
-    // Função universal para ativar as Tooltips em qualquer momento
-    function ativarTooltips() {
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-    }
-
-    // Inicializa tudo quando a página carrega
-    document.addEventListener('DOMContentLoaded', () => {
-        renderizarCarrinho();
-        atualizarMenuUsuario();
-        ativarTooltips(); // Ativa logo o ícone do cabeçalho!
-    });
-
-</script>
-
-<script>
-    // Função que aplica o tema do Bootstrap baseado no sistema operacional
-    function aplicarTemaDoSistema() {
-        // Verifica se o navegador/sistema está no modo escuro
-        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Define o atributo do Bootstrap na tag <html>
-        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
-    }
-
-    // Aplica o tema assim que a página carrega
-    aplicarTemaDoSistema();
-
-    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
-</script>
-
-
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+        document.addEventListener('DOMContentLoaded', async () => {
+            await carregarEstoquesAPI();
+            renderizarCarrinho();
+            carregarEnderecosNoCarrinho();
+        });
+    </script>
 </body>
 </html>

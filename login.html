@@ -37,22 +37,23 @@
             
             <div id="alertMsg" class="alert d-none text-center fw-bold" role="alert"></div>
 
-            <form id="formLogin" onsubmit="fazerLogin(event)">
+            <form id="formLogin" novalidate>
                 
                 <div class="mb-3">
                     <label for="email" class="form-label fw-semibold text-dark">E-mail</label>
-                    <input type="email" class="form-control bg-light p-3" id="email" placeholder="seuemail@exemplo.com" required>
+                    <input type="text" class="form-control bg-light p-3" id="email" placeholder="seuemail@exemplo.com">
                 </div>
 
                 <div class="mb-4">
                     <label for="senha" class="form-label fw-semibold text-dark">Senha</label>
-                    <input type="password" class="form-control bg-light p-3" id="senha" placeholder="Sua senha secreta" required>
+                    <input type="password" class="form-control bg-light p-3" id="senha" placeholder="Sua senha secreta">
                 </div>
 
                 <button type="submit" class="btn w-100 py-3 fw-bold rounded-pill btn-voltar-premium">
                     Entrar
                 </button>
             </form>
+
 
             <p class="text-center mt-4 mb-0 text-muted">
                 Ainda não tem conta? <a href="cadastro.html" class="fw-bold text-decoration-none" style="color: #c92525;">Cadastrar-se</a>
@@ -61,59 +62,48 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="js/global.js"></script>
+
+
+
     <script>
-        function fazerLogin(event) {
-            event.preventDefault();
+        document.addEventListener("DOMContentLoaded", () => {
+  const formLogin = document.getElementById("formLogin");
+  const alertMsg = document.getElementById("alertMsg");
 
-            const email = document.getElementById('email').value.trim().toLowerCase();
-            const senha = document.getElementById('senha').value;
-            const alertMsg = document.getElementById('alertMsg');
+  // Função auxiliar para mostrar avisos na tela de login
+  function mostrarAlerta(texto, tipo = "danger") {
+    alertMsg.className = `alert alert-${tipo}`;
+    alertMsg.textContent = texto;
+    alertMsg.classList.remove("d-none");
+  }
 
-            // 1. Puxa a lista de usuários da memória
-            let usuarios = JSON.parse(localStorage.getItem('usuariosCadastrados')) || [];
+  if (formLogin) {
+    formLogin.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            // 2. Procura na lista alguém com esse e-mail E essa senha
-            let usuarioEncontrado = usuarios.find(u => u.email === email && u.senha === senha);
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
 
-            if (usuarioEncontrado) {
-                
-                // Grava a "sessão" apenas do usuário que logou
-                localStorage.setItem('usuarioLogado', JSON.stringify({
-                    nome: usuarioEncontrado.nome,
-                    email: usuarioEncontrado.email
-                }));
+      // Chama a função que está no js/global.js
+      const res = await requisicaoAPI("/api/login", {
+        method: "POST",
+        body: JSON.stringify({ email, senha })
+      });
 
-                alertMsg.className = 'alert alert-success';
-                alertMsg.innerText = `Bem-vindo de volta, ${usuarioEncontrado.nome.split(' ')[0]}!`;
+      if (!res.ok) {
+        // Exibe automaticamente erro 400 (campos vazios) ou 401 (credenciais inválidas)
+        mostrarAlerta(res.mensagem, "danger");
+        return;
+      }
 
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1200);
-
-            } else {
-                alertMsg.className = 'alert alert-danger';
-                alertMsg.innerText = 'E-mail ou senha incorretos!';
-            }
-        }
+      // Salva no localStorage exatamente no padrão do seu projeto e redireciona
+      localStorage.setItem("usuarioLogado", JSON.stringify(res.dados.usuario));
+      window.location.href = "index.html";
+    });
+  }
+});
     </script>
-
-    <script>
-    // Função que aplica o tema do Bootstrap baseado no sistema operacional
-    function aplicarTemaDoSistema() {
-        // Verifica se o navegador/sistema está no modo escuro
-        const prefereEscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Define o atributo do Bootstrap na tag <html>
-        document.documentElement.setAttribute('data-bs-theme', prefereEscuro ? 'dark' : 'light');
-    }
-
-    // Aplica o tema assim que a página carrega
-    aplicarTemaDoSistema();
-
-    // Fica "ouvindo" caso o usuário mude o tema do PC com o site aberto
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTemaDoSistema);
-</script>
 
 
 
